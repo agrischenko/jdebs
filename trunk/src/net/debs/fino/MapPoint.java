@@ -29,6 +29,11 @@ public class MapPoint {
 		this.y = y;
 	}
 
+	/**
+	 * Получить квадрат расстояния между этой и другой точкой
+	 * @param p другая точка
+	 * @return квадрат расстояния
+	 */
 	public int getSqLengthTo(MapPoint p) {
 		int lx = (getX()-p.getX());
 		int ly = (getY()-p.getY());

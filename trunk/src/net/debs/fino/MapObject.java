@@ -6,5 +6,8 @@ package net.debs.fino;
  *
  */
 public abstract class MapObject {
+	/**
+	 * точка
+	 */
 	MapPoint pivotPoint;
 }
