@@ -39,4 +39,16 @@ public class MapPoint {
 		int ly = (getY()-p.getY());
 		return lx*lx + ly*ly;
 	}
+	
+	/**
+	 * Получить рстояние между этой точкой и другой
+	 * @param p другая точка
+	 * @return расстояния
+	 */
+	public int getLengthTo(MapPoint p) {
+		int lx = (getX()-p.getX());
+		int ly = (getY()-p.getY());
+		return (int) Math.sqrt(lx*lx + ly*ly);
+	}
+	
 }
