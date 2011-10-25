@@ -1,25 +1,44 @@
 package net.debs.fino.ai;
 
+import java.util.Vector;
+
 import net.debs.fino.DebsMap;
+import net.debs.fino.GameObject;
 import net.debs.fino.MapObject;
 import net.debs.fino.MapPoint;
 
 public class AIMap {
 	
 	private DebsMap map;
-	private MapObject curObject;
+	private GameObject curObject;
 	
-	public AIMap(DebsMap map, MapObject object)
+	public AIMap(DebsMap map, GameObject object)
 	{
 		this.map = map;
 		this.curObject = object;
 	}
 	
-	public MapObject getMapObject(MapPoint point)
+	public Vector<AIGameObject> geGameObject(MapPoint point)
 	{
 		
-		//point.getSqLengthTo(curObject.)
-		return null;
+		// Если запрошенная координата находится не в области видимости текущего объекта - то возвращаем null
+		if (point.getLengthTo(map.getMapPoint(this.curObject)) > (Integer) curObject.getProperty("rangeOfVisibility")) return null;
+		
+		// Массив объектов которые расположены на карте
+		Vector<MapObject> objects = map.getMapObjects(map.getMapPoint(this.curObject));
+		
+		// Массив объектов которые будут доступны из скрипта (необходимо преобразовать из MapObject -> AIGameObject)
+		Vector<AIGameObject> aiObjects = new Vector<AIGameObject>();
+		
+		for (MapObject object : objects) {
+			if (object instanceof GameObject) {
+				GameObject gameObject = (GameObject) object;
+				aiObjects.add(new AIGameObject(gameObject));
+			}
+		}
+		
+		return aiObjects;
+		
 	}
 	
 }
