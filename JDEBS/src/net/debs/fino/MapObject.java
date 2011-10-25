@@ -9,7 +9,12 @@ public abstract class MapObject {
 	/**
 	 * точка
 	 */
-	MapPoint pivotPoint;
+	private MapPoint pivotPoint;
+	
+	public MapPoint getMapPoint(){
+		return pivotPoint;
+	}
+	
 
 	public MapPoint getPivotPoint() {
 		return pivotPoint;
