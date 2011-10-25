@@ -1,6 +1,7 @@
 package net.debs.fino;
 
 import java.util.Hashtable;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -76,4 +77,15 @@ public class DebsMap {
 		sol.setPivotPoint(new MapPoint(x, y));
 		objects.put(sol.getPivotPoint(), sol);
 	}
+	
+	public Vector<MapObject> getMapObjects(MapPoint point){
+		//TODO: Необходимо вернуть вектор объектов содержащихся в указанной точке 
+		return null;
+	}
+	
+	public MapPoint getMapPoint(MapObject object){
+		//TODO: Необходимо возвращять позицию на карте переданного объекта (возможно нужно будет добавить еще один хэш тэйбл типа такого: Hashtable<MapObject, MapPoint> objects)
+		return null;
+	}
+	
 }
