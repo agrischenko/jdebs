@@ -22,8 +22,8 @@ public class AICore {
 	 * @param gameObject игровой объект для которого
 	 * @return вектор объектов
 	 */
-	public Action getAction(GameObject gameObject, DebsMap map) {
-		Action action = null;
+	public static Action getAction(GameObject gameObject, DebsMap map) {
+		Action action = new Action();
 		
 		LuaState L = LuaStateFactory.newLuaState();
 		L.openLibs();
