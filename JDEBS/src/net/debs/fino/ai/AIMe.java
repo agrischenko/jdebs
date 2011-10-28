@@ -3,16 +3,13 @@ package net.debs.fino.ai;
 import net.debs.fino.GameObject;
 
 /**
- * Реализация текущего юнита (для которого выполняется скрипт)
+ * Реализация класа текущего юнита (для которого выполняется скрипт)
  * @author AAntonenko
  */
-public class AIMe {
+public class AIMe extends AIAlly{
 
-	private GameObject object;
-	
-	public AIMe(GameObject object)
-	{
-		this.object = object;
+	public AIMe(GameObject object) {
+		super(object);
 	}
-	
+
 }
