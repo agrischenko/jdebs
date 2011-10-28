@@ -61,8 +61,14 @@ public class ResolverCore {
 		L.pushJavaObject(map);
 		L.setGlobal("map");
 		
+		String error = "";
+		L.pushJavaObject(error);
+		L.setGlobal("error");
+		
 		if (L.LdoFile(pathScript) != 0) System.err.println(String.valueOf(L.error()));
         
+		if (!error.isEmpty()) System.err.println("Ошибка выполнения дайствия '" + action.getType() + "' для объекта с Id '" + object.getId() + "': " + error);
+		
 	}
 	
 }
