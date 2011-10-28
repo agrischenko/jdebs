@@ -83,9 +83,4 @@ public class DebsMap {
 		return null;
 	}
 	
-	public MapPoint getMapPoint(MapObject object){
-		//TODO: Необходимо возвращять позицию на карте переданного объекта (возможно нужно будет добавить еще один хэш тэйбл типа такого: Hashtable<MapObject, MapPoint> objects)
-		return null;
-	}
-	
 }
