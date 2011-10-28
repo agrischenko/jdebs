@@ -4,11 +4,8 @@ import net.debs.fino.Action;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 
-import org.keplerproject.luajava.LuaException;
 import org.keplerproject.luajava.LuaState;
 import org.keplerproject.luajava.LuaStateFactory;
-
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 /**
  * Реализация пользовательского скрипта, используется LUA
@@ -34,7 +31,7 @@ public class AICore {
 		L.pushJavaObject(new AIMap(map, gameObject));
 		L.setGlobal("map");
 		
-		L.pushJavaObject(new AIMe(gameObject));
+		L.pushJavaObject(new AIMe(gameObject, map));
 		L.setGlobal("me");
 		
 		if (L.LdoFile(gameObject.getProperty("script").toString()) != 0) System.out.println(String.valueOf(L.error()));

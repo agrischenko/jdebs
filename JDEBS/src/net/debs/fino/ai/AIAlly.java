@@ -1,5 +1,6 @@
 package net.debs.fino.ai;
 
+import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 
 /**
@@ -8,8 +9,12 @@ import net.debs.fino.GameObject;
  */
 public class AIAlly extends AIGameObject {
 
-	public AIAlly(GameObject object) {
-		super(object);
+	public AIAlly(GameObject object, DebsMap map) {
+		super(object, map);
+	}
+
+	public Object getProperty(String key){
+		return this.object.getAiProperty(key);
 	}
 
 }
