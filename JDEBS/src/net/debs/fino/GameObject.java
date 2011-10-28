@@ -16,45 +16,47 @@ public class GameObject extends ComplexMapObject {
 	private String id = UNDEFINED_ID;
 	
 	/**
-	 * видно в AI Script
+	 * не видно в AI Script
 	 */
 	Hashtable<String, Object> properties = new Hashtable<String, Object>();
 	/**
-	 * не видно в AI Script
+	 * видно в AI Script
 	 */
-	Hashtable<String, Object> systemProperties = new Hashtable<String, Object>();
+	Hashtable<String, Object> aiProperties = new Hashtable<String, Object>();
 
 	/**
-	 * Получить системное свойство объекта
-	 * @return значение по ключу. Если отсутствует - значит null
+	 * Получить свойство объекта (используемое в скрипте)
+	 * @return значение по ключу. Если значение отсутствует - значит null
 	 * @param key ключ свойства
-	 */
-	public Object getSystemProperty(String key) {
-		return systemProperties.get(key);
+	 */	
+	public Object getAiProperty(String key) {
+		return aiProperties.get(key);
 	}
+	
 	/**
-	 * Установить системное свойство объекта
+	 * Установить свойство объекта (используемое в скрипте)
 	 * @return старое значение по этому ключу. Если значение отсутствует - значит null
+	 * @param key ключ свойства
+	 * @param value значение
 	 */
-	public Object setSystemProperty(String key, Object value) {
-		Object oldValue = getSystemProperty(key);
-		systemProperties.put(key, value);
+	public Object setAiProperty(String key, Object value) {
+		Object oldValue = getAiProperty(key);
+		aiProperties.put(key, value);
 		return oldValue;
 	}
 
 	/**
-	 * Получить скриптуемое свойство объекта
-	 * @return значение по ключу. Если значение отсутствует - значит null
+	 * Получить свойство объекта
+	 * @return значение по ключу. Если отсутствует - значит null
 	 * @param key ключ свойства
 	 */
 	public Object getProperty(String key) {
 		return properties.get(key);
 	}
+
 	/**
-	 * Установить скриптуемое свойство объекта
+	 * Установить свойство объекта
 	 * @return старое значение по этому ключу. Если значение отсутствует - значит null
-	 * @param key ключ свойства
-	 * @param value значение
 	 */
 	public Object setProperty(String key, Object value) {
 		Object oldValue = getProperty(key);
