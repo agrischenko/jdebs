@@ -86,7 +86,7 @@ public class GameObject extends ComplexMapObject {
 	 * @see Action
 	 */
 	public Action getAction(DebsMap map) {
-		return new AICore().getAction(this, map);
+		return AICore.getAction(this, map);
 	}
 	
 }
