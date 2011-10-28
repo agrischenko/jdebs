@@ -36,6 +36,8 @@ public class AICore {
 		
 		if (L.LdoFile(gameObject.getProperty("script").toString()) != 0) System.out.println(String.valueOf(L.error()));
 		
+		L.close(); 
+		
 		return action;
 	}
 
