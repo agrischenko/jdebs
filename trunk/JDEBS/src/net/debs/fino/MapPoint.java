@@ -9,6 +9,10 @@ public class MapPoint {
 	int x;
 	int y;
 	
+	public static MapPoint createMapPoint(int x, int y){
+		return new MapPoint(x, y);
+	}
+	
 	public MapPoint(int x, int y) {
 		this.x = x; this.y = y;
 	}
