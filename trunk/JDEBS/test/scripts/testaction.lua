@@ -1,0 +1,1 @@
+object:setProperty("testProperty", 2);
