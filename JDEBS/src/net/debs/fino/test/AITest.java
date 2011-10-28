@@ -36,7 +36,7 @@ public class AITest {
 		//¬ывод полученного действи€ на консоль
 		if (action != null) {
 			System.out.printf("Action.type = '%s'\n", action.getType());
-			System.out.printf("Action.id = '%d'\n", action.getId());
+			System.out.printf("Action.id = '%s'\n", action.getId());
 		}
 		else {
 			System.out.printf("Action is null\n");
