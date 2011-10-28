@@ -67,6 +67,8 @@ public class ResolverCore {
 		
 		if (L.LdoFile(pathScript) != 0) System.err.println(String.valueOf(L.error()));
         
+		L.close();
+		
 		if (!error.isEmpty()) System.err.println("Ошибка выполнения дайствия '" + action.getType() + "' для объекта с Id '" + object.getId() + "': " + error);
 		
 	}
