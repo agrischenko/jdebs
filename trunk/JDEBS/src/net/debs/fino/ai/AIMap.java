@@ -31,10 +31,10 @@ public class AIMap {
 	{
 		
 		// Если запрошенная координата находится не в области видимости текущего объекта - то возвращаем null
-		if (point.getLengthTo(map.getMapPoint(this.curObject)) > (Integer) curObject.getProperty("rangeOfVisibility")) return null;
+		if (point.getDistanceTo(this.curObject.getMapPoint()) > (Integer) curObject.getProperty("rangeOfVisibility")) return null;
 		
 		// Массив объектов которые расположены на карте
-		Vector<MapObject> objects = map.getMapObjects(map.getMapPoint(this.curObject));
+		Vector<MapObject> objects = map.getMapObjects(this.curObject.getMapPoint());
 		
 		// Массив объектов которые будут доступны из скрипта (необходимо преобразовать из MapObject -> AIGameObject)
 		Vector<AIGameObject> aiObjects = new Vector<AIGameObject>();
@@ -43,7 +43,7 @@ public class AIMap {
 		for (MapObject object : objects) {
 			if (object instanceof GameObject) {
 				GameObject gameObject = (GameObject) object;
-				aiObjects.add(new AIGameObject(gameObject));
+				aiObjects.add(new AIGameObject(gameObject, map));
 			}
 		}
 		
