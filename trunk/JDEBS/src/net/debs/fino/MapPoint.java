@@ -34,7 +34,7 @@ public class MapPoint {
 	 * @param p другая точка
 	 * @return квадрат расстояния
 	 */
-	public int getSqLengthTo(MapPoint p) {
+	public int getSqDistanceTo(MapPoint p) {
 		int lx = (getX()-p.getX());
 		int ly = (getY()-p.getY());
 		return lx*lx + ly*ly;
@@ -45,7 +45,7 @@ public class MapPoint {
 	 * @param p другая точка
 	 * @return расстояния
 	 */
-	public int getLengthTo(MapPoint p) {
+	public int getDistanceTo(MapPoint p) {
 		int lx = (getX()-p.getX());
 		int ly = (getY()-p.getY());
 		return (int) Math.sqrt(lx*lx + ly*ly);
