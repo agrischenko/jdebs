@@ -1,5 +1,6 @@
 // factions
-#id	name	color
-1	Red	255 0 0
-2	Blue	0 0 255
-3	Green	0 255 0
+#id	color
+Red	200 100 100
+Blue	100 100 200
+Green	100 200 100
+Gray	100 100 100
