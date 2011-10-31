@@ -3,9 +3,9 @@ package net.debs.fino.ai;
 import net.debs.fino.Action;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
+import net.debs.fino.script.ScriptCore;
 
 import org.keplerproject.luajava.LuaState;
-import org.keplerproject.luajava.LuaStateFactory;
 
 /**
  * Реализация пользовательского скрипта, используется LUA
@@ -22,8 +22,7 @@ public class AICore {
 	public static Action getAction(GameObject gameObject, DebsMap map) {
 		Action action = new Action();
 		
-		LuaState L = LuaStateFactory.newLuaState();
-		L.openLibs();
+		LuaState L = ScriptCore.getScriptCore().getLuaState();
 			    
 		L.pushJavaObject(action);
 		L.setGlobal("action");
