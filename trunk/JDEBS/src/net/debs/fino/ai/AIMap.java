@@ -31,7 +31,7 @@ public class AIMap {
 	{
 		
 		// Если запрошенная координата находится не в области видимости текущего объекта - то возвращаем null
-		if (point.getDistanceTo(this.curObject.getMapPoint()) > (Integer) curObject.getProperty("rangeOfVisibility")) return null;
+		if (point.getDistanceTo(this.curObject.getMapPoint()) > (Integer) curObject.getProperty("rangeOfVisibility").get()) return null;
 		
 		// Массив объектов которые расположены на карте
 		Vector<MapObject> objects = map.getMapObjects(this.curObject.getMapPoint());

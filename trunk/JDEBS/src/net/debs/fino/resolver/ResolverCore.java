@@ -68,7 +68,7 @@ public class ResolverCore {
         
 		L.close();
 		
-		if (!error.isEmpty()) System.err.println("Ошибка выполнения дайствия '" + action.getType() + "' для объекта с Id '" + object.getId() + "': " + error);
+		if (error.length()!=0) System.err.println("Ошибка выполнения дайствия '" + action.getType() + "' для объекта с Id '" + object.getId() + "': " + error);
 		
 	}
 	

@@ -5,34 +5,69 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JViewport;
+
 import net.debs.fino.DebsMap;
+import net.debs.fino.GameObject;
 import net.debs.fino.MapObject;
 import net.debs.fino.MapPoint;
 
 public class MapDisplay extends Component {
 
-	protected int cellWidth = 15;
-	protected int cellHeight = 15;
+	protected int MAXCELLSIZE = 100;
 	
-	Color defaultUnitColor = new Color(45, 15, 235);
+	protected int cellWidth = MAXCELLSIZE / 2;
+	protected int cellHeight = MAXCELLSIZE / 2;
 	
 	BufferedImage sceneImage;
 	int imw;
 	int imh;
 	
-	private DebsMap map;
+	protected DebsMap map;
 	
 	public MapDisplay(DebsMap map) {
 		this.map = map;
 
+		recalcSceneImage();
+		setPreferredSize(new Dimension(imw, imh));
+		
+		addMouseWheelListener(new MouseWheelListener() {
+
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (e.isControlDown()) {
+					int oldw = cellWidth;
+					int mod = e.getWheelRotation() * 10;
+					cellWidth -= mod;
+					cellHeight -= mod;
+					if (cellWidth<10) {
+						cellWidth = cellHeight = 10;
+					} else if (cellWidth>MAXCELLSIZE) {
+						cellWidth = cellHeight = MAXCELLSIZE;
+					}
+					
+					if (oldw!=cellWidth) {
+						recalcSceneImage();
+						setPreferredSize(new Dimension(sceneImage.getWidth(), sceneImage.getWidth()));
+						repaint();
+						((JViewport)getParent()).updateUI();
+					}
+				}
+			}
+		});
+		
+	}
+	
+	private void recalcSceneImage() {
 		imw = map.getWidth() * cellWidth;
 		imh = map.getHeight() * cellHeight;
 		sceneImage = new BufferedImage(imw, imh, BufferedImage.TYPE_INT_RGB);
-		setPreferredSize(new Dimension(imw, imh));
 	}
-	
+
 	@Override
 	public void paint(Graphics g) {
 		// рисуем буфер картинки
@@ -64,9 +99,11 @@ public class MapDisplay extends Component {
 			int x = point.getX() * cellWidth;
 			int y = point.getY() * cellHeight;
 			
-			g.setColor(defaultUnitColor);
-			
-			g.fillOval(x, y, cellWidth, cellHeight);
+			if (obj instanceof GameObject) {
+				GameObject gm = (GameObject) obj;
+				Image im = (Image) (gm.getProperty("graphics.defaultImage").get());
+				g.drawImage(im, x, y, cellWidth, cellHeight, this);
+			}
 		}
 	}
 
@@ -79,4 +116,6 @@ public class MapDisplay extends Component {
 			g.drawLine(0, pos, imw, pos);
 	}
 
+	
+	
 }
