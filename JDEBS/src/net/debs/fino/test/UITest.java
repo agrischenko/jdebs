@@ -23,10 +23,10 @@ public class UITest extends JFrame {
 		map.setWidth(30);
 		map.setHeight(30);
 
-		map.addObject(5, 5, new GameObject());
-		map.addObject(6, 5, new GameObject());
-		map.addObject(7, 5, new GameObject());
-		map.addObject(6, 6, new GameObject());
+		map.addObject(5, 5, new GameObject("warrior","red"));
+		map.addObject(6, 5, new GameObject("warrior","red"));
+		map.addObject(7, 5, new GameObject("archer","red"));
+		map.addObject(6, 6, new GameObject("warrior","blue"));
 		
 		getContentPane().add(new JScrollPane(new MapDisplay(map)) );
 		

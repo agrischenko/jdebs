@@ -1,0 +1,3 @@
+#id	imagepath	fillpoints
+warrior	overrides/warrior.gif	11,11
+archer	overrides/archer.gif	11,11;35,15;35,25

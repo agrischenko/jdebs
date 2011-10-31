@@ -1,8 +1,15 @@
 package net.debs.fino;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Hashtable;
 
+import javax.imageio.ImageIO;
+
 import net.debs.fino.ai.AICore;
+import net.debs.fino.res.ResourceManager;
 
 /**
  * Реализация игрового объекта
@@ -15,10 +22,25 @@ public class GameObject extends ComplexMapObject {
 	
 	private String id = UNDEFINED_ID;
 	
+	public GameObject() {
+		Image defaultImage = null;
+		try {
+			defaultImage = ResourceManager.loadImage("resources/overrides/warrior.gif ");
+			properties.put("graphics.defaultImage", new Property(defaultImage));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public GameObject(String modelName, String factionName) {
+		Image im = ResourceManager.getModelImage(modelName, factionName);
+		setProperty("graphics.defaultImage", im);
+	}
+
 	/**
 	 * не видно в AI Script
 	 */
-	Hashtable<String, Object> properties = new Hashtable<String, Object>();
+	Hashtable<String, Property> properties = new Hashtable<String, Property>();
 	/**
 	 * видно в AI Script
 	 */
@@ -50,7 +72,7 @@ public class GameObject extends ComplexMapObject {
 	 * @return значение по ключу. Если отсутствует - значит null
 	 * @param key ключ свойства
 	 */
-	public Object getProperty(String key) {
+	public Property getProperty(String key) {
 		return properties.get(key);
 	}
 
@@ -60,7 +82,7 @@ public class GameObject extends ComplexMapObject {
 	 */
 	public Object setProperty(String key, Object value) {
 		Object oldValue = getProperty(key);
-		properties.put(key, value);
+		properties.put(key, new Property(value));
 		return oldValue;
 	}
 
