@@ -54,5 +54,10 @@ public class MapPoint {
 		int ly = (getY()-p.getY());
 		return (int) Math.sqrt(lx*lx + ly*ly);
 	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(x) + ":" + String.valueOf(y);
+	}
 	
 }
