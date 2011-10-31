@@ -19,7 +19,7 @@ import net.debs.fino.MapPoint;
 
 public class MapDisplay extends Component {
 
-	protected int MAXCELLSIZE = 100;
+	protected int MAXCELLSIZE = 50;
 	
 	protected int cellWidth = MAXCELLSIZE / 2;
 	protected int cellHeight = MAXCELLSIZE / 2;
@@ -41,7 +41,7 @@ public class MapDisplay extends Component {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if (e.isControlDown()) {
 					int oldw = cellWidth;
-					int mod = e.getWheelRotation() * 10;
+					int mod = e.getWheelRotation() * 2;
 					cellWidth -= mod;
 					cellHeight -= mod;
 					if (cellWidth<10) {

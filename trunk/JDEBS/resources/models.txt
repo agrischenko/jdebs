@@ -1,3 +1,5 @@
-#id	imagepath	fillpoints
-warrior	overrides/warrior.gif	11,11
-archer	overrides/archer.gif	11,11;35,15;35,25
+#id	imagepath
+warrior	overrides/warrior.gif
+archer	overrides/archer.gif
+elephant	overrides/elephant.gif
+chupa	overrides/chupacabra.gif
