@@ -3,11 +3,11 @@ package net.debs.fino.resolver;
 import java.io.File;
 
 import org.keplerproject.luajava.LuaState;
-import org.keplerproject.luajava.LuaStateFactory;
 
 import net.debs.fino.Action;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
+import net.debs.fino.script.ScriptCore;
 
 /**
  * Реализация выполнения действия для юнита на карте
@@ -17,7 +17,7 @@ import net.debs.fino.GameObject;
 public class ResolverCore {
 
 	private static String pathToActionScript = ""; 
-	
+
 	/**
 	 * Устанавливает путь к папке со скриптами действий
 	 * @param path путь к папке без слеша в конце
@@ -49,8 +49,7 @@ public class ResolverCore {
         }
 		
         //Выполнение файла действия (В скрипте доступны: object - объект который выполняет дейсвтие; action - выполняемое действие; map - карта на которой выполняется дейсвтие)
-        LuaState L = LuaStateFactory.newLuaState();
-		L.openLibs();
+        LuaState L = ScriptCore.getScriptCore().getLuaState();
 		
 		L.pushJavaObject(object);
 		L.setGlobal("object");
