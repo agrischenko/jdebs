@@ -18,7 +18,7 @@ import javax.imageio.ImageIO;
  */
 public class ResourceManager {
 	
-	Hashtable<String, net.debs.fino.res.Resource> resources = new Hashtable<String, net.debs.fino.res.Resource>();
+	Hashtable<String, Object> resources = new Hashtable<String, Object>();
 
 	public static String MODEL = "model";
 	public static String FACTION = "faction";
@@ -31,9 +31,8 @@ public class ResourceManager {
 	public static void showAllResourcesAsText() {
 		Iterator it = me.resources.entrySet().iterator();
 		while(it.hasNext()) {
-			java.util.Map.Entry<String, Resource> entry = (java.util.Map.Entry<String, Resource>) it.next();
-			Resource r = entry.getValue();
-			System.out.println(entry.getKey()+" = "+r.get());
+			java.util.Map.Entry<String, Object> entry = (java.util.Map.Entry<String, Object>) it.next();
+			System.out.println(entry.getKey()+" = "+entry.getValue());
 		}
 	}
 
@@ -47,22 +46,19 @@ public class ResourceManager {
 		return me;
 	}
 
-	public static Resource getResource(String query) {
+	public static Object getResource(String query) {
 		return me.getResourceImpl(query);
 	}
 
-	protected Resource getResourceImpl(String query) {
-		Resource r = resources.get(query.toLowerCase());
-		if (r==null)
-			r = new Resource();
-		return r;
+	protected Object getResourceImpl(String query) {
+		return resources.get(query.toLowerCase());
 	}
 	
-	public static void putResource(String key, Resource resource) {
+	public static void putResource(String key, Object resource) {
 		me.putResourceImpl(key, resource);
 	}
 	
-	public void putResourceImpl(String key, Resource resource) {
+	public void putResourceImpl(String key, Object resource) {
 		resources.put(key.toLowerCase(), resource);
 	}
 
@@ -86,13 +82,13 @@ public class ResourceManager {
 		BufferedImage bim = null;
 		try {
 			String imageKey = MODEL+"."+modelName+"."+factionName+".image.normal";
-			bim = (BufferedImage) getResourceImpl(imageKey).get();
+			bim = (BufferedImage) getResourceImpl(imageKey);
 			if (bim==null) {
 				
 				// if image[model+faction] not exists - create it
 				
 				String resKey = MODEL+"."+modelName+".";
-				String filePath = getResourceImpl(resKey+ModelsLoader.IMAGEPATH).getString();
+				String filePath = (String) getResourceImpl(resKey+ModelsLoader.IMAGEPATH);
 				Image im = ResourceManager.loadImage("resources/"+filePath);
 
 				// fill faction color
@@ -103,14 +99,14 @@ public class ResourceManager {
 						BufferedImage.BITMASK|BufferedImage.OPAQUE);
 				
 				resKey = FACTION+"."+factionName+".";
-				Color color = (Color) getResourceImpl(resKey+FactionsLoader.COLOR).get();
+				Color color = (Color) getResourceImpl(resKey+FactionsLoader.COLOR);
 				Graphics g = bim.getGraphics();
 				g.setColor(color);
 				g.fillOval(2,2, im.getWidth(null)-4, im.getHeight(null)-4);
 				g.drawImage(im, 0, 0, null);
 				g.dispose();
 				
-				putResource(imageKey, new Resource(bim));
+				putResource(imageKey, bim);
 				
 			}
 		} catch (IOException e) {

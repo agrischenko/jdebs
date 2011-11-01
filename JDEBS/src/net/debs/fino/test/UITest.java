@@ -1,5 +1,8 @@
 package net.debs.fino.test;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
@@ -32,7 +35,7 @@ public class UITest extends JFrame {
 		map.addObject(10, 8, new GameObject("chupa","red"));
 		map.addObject(6, 6, new GameObject("elephant","gray"));
 		
-		getContentPane().add(new JScrollPane(new MapDisplay(map)) );
+		getContentPane().add(new MapDisplay(map));
 		
 		setVisible(true);
 	}

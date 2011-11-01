@@ -26,7 +26,7 @@ public class GameObject extends ComplexMapObject {
 		Image defaultImage = null;
 		try {
 			defaultImage = ResourceManager.loadImage("resources/overrides/warrior.gif ");
-			properties.put("graphics.defaultImage", new Property(defaultImage));
+			properties.put("graphics.defaultImage", defaultImage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -40,7 +40,7 @@ public class GameObject extends ComplexMapObject {
 	/**
 	 * не видно в AI Script
 	 */
-	Hashtable<String, Property> properties = new Hashtable<String, Property>();
+	Hashtable<String, Object> properties = new Hashtable<String, Object>();
 	/**
 	 * видно в AI Script
 	 */
@@ -72,7 +72,7 @@ public class GameObject extends ComplexMapObject {
 	 * @return значение по ключу. Если отсутствует - значит null
 	 * @param key ключ свойства
 	 */
-	public Property getProperty(String key) {
+	public Object getProperty(String key) {
 		return properties.get(key);
 	}
 
@@ -82,7 +82,7 @@ public class GameObject extends ComplexMapObject {
 	 */
 	public Object setProperty(String key, Object value) {
 		Object oldValue = getProperty(key);
-		properties.put(key, new Property(value));
+		properties.put(key, value);
 		return oldValue;
 	}
 
