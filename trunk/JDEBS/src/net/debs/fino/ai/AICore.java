@@ -21,9 +21,9 @@ public class AICore {
 	 */
 	public static Action getAction(GameObject gameObject, DebsMap map) {
 		Action action = new Action();
-		
+
 		LuaState L = ScriptCore.getScriptCore().getLuaState();
-			    
+
 		L.pushJavaObject(action);
 		L.setGlobal("action");
 		
