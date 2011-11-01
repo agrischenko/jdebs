@@ -79,7 +79,12 @@ public class DebsMap {
 	}
 	
 	public Vector<MapObject> getMapObjects(MapPoint point){
-		//TODO: Необходимо вернуть вектор объектов содержащихся в указанной точке 
+		//TODO: Необходимо вернуть вектор объектов MapObject содержащихся в указанной точке 
+		return null;
+	}
+	
+	public Vector<GameObject> getGameObjects(MapPoint point){
+		//TODO: Необходимо вернуть вектор объектов GameObject содержащихся в указанной точке 
 		return null;
 	}
 	
