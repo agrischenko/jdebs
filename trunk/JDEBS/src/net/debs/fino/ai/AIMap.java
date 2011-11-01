@@ -6,6 +6,7 @@ import java.util.Vector;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 import net.debs.fino.MapPoint;
+import net.debs.fino.dnd.MapDistance;
 import net.debs.fino.dnd.MapVisibility;
 
 /**
@@ -23,8 +24,20 @@ public class AIMap {
 	//кэш противников
 	private Hashtable<MapPoint, Vector<AIEnemy>> enemysCache = new Hashtable<MapPoint, Vector<AIEnemy>>();
 	
+	//кэш противников по расстоянию
+	private Hashtable<Integer, Vector<AIEnemy>> enemysByDistanceCache = null;
+	
+	//кэш всех противников
+	private Vector<AIEnemy> enemysAll = null;
+	
 	//кэш союзников
 	private Hashtable<MapPoint, Vector<AIAlly>> allysCache = new Hashtable<MapPoint, Vector<AIAlly>>();
+	
+	//кэш союзников по расстоянию
+	private Hashtable<Integer, Vector<AIAlly>> allysByDistanceCache = new Hashtable<Integer, Vector<AIAlly>>();
+	
+	//кэш всех союзников
+	private Vector<AIAlly> allysAll = null;
 	
 	public AIMap(DebsMap map, GameObject object)
 	{
@@ -184,6 +197,148 @@ public class AIMap {
 		if (allysCache.get(point).isEmpty()) return null;
 		
 		return allysCache.get(point).firstElement();
+	}
+	
+	/**
+	 * Возвращает коллекцию всех видимых противников (AIEnemy)
+	 * @return вектор объектов, если объектов нет возвращается null
+	 */
+	public Vector<AIEnemy> getEnemys(){
+		cacheEnemysByDistance();
+		if (enemysAll.isEmpty()) return null; 
+		return enemysAll;
+	}
+	
+	/**
+	 * Возвращает коллекцию всех видимых союзников (AIAlly)
+	 * @return вектор объектов, если объектов нет возвращается null
+	 */
+	public Vector<AIAlly> getAllys(){
+		cacheAllysByDistance();
+		if (allysAll.isEmpty()) return null; 
+		return allysAll;
+	}
+	
+	/**
+	 * Возвращает ближайшего врага (AIEnemy)
+	 * @return объект AIEnemy, если видимых врагов нет - возвращает null
+	 */
+	public AIEnemy getNearestEnemy(){
+		
+		int range = (Integer) this.curObject.getProperty("rangeOfVisibility");
+		
+		cacheEnemysByDistance();
+		Vector<AIEnemy> enemys = null;
+		
+		for (int d = 0; d <= range; d++) {
+			enemys = enemysByDistanceCache.get(d);
+			if ((enemys != null) && (!enemys.isEmpty())) return enemys.firstElement();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Возвращает ближайшего союзника (AIAlly)
+	 * @return объект AIAlly, если видимых союзников нет - возвращает null
+	 */
+	public AIAlly getNearestAlly(){
+		
+		int range = (Integer) this.curObject.getProperty("rangeOfVisibility");
+		
+		cacheAllysByDistance();
+		Vector<AIAlly> allys = null;
+		
+		for (int d = 0; d <= range; d++) {
+			allys = allysByDistanceCache.get(d);
+			if ((allys != null) && (!allys.isEmpty())) return allys.firstElement();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * кэширует противников по расстояниям, и всех противников
+	 */
+	private void cacheEnemysByDistance(){
+		
+		if (enemysByDistanceCache != null) return;
+		
+		enemysByDistanceCache = new Hashtable<Integer, Vector<AIEnemy>>();
+		
+		int range = (Integer) this.curObject.getProperty("rangeOfVisibility");
+		
+		int x1 = curObject.getMapPoint().getX() - range;
+		if (x1 < 0) x1 = 0;
+		int x2 = curObject.getMapPoint().getX() + range;
+		if (x2 >= map.getWidth()) x2 = map.getWidth() - 1;
+		int y1 = curObject.getMapPoint().getY() - range;
+		if (y1 < 0) y1 = 0;
+		int y2 = curObject.getMapPoint().getY() + range;
+		if (y2 >= map.getHeight()) y2 = map.getHeight() - 1;
+		
+		MapPoint point = null;
+		MapPoint curObjectPoint = curObject.getMapPoint();
+		Integer distance;
+		
+		enemysAll = new Vector<AIEnemy>();
+		
+		for (int x = x1; x <= x2; x++) {
+			for (int y = y1; y <= y2; y++) {
+				point = new MapPoint(x, y);
+				if (canSee(point)) {
+					distance = MapDistance.distance(map, point, curObjectPoint);
+					Vector<AIEnemy> enemys = enemysByDistanceCache.get(distance);
+					if (enemys == null) enemys = getEnemys(point);
+					else enemys.addAll(enemys);
+					enemysByDistanceCache.put(distance, enemys);
+					enemysAll.addAll(enemys);
+				}
+			}
+		}
+		
+	}
+	
+	/**
+	 * кэширует союзников по расстояниям, и всех союзников
+	 */
+	private void cacheAllysByDistance(){
+		
+		if (allysByDistanceCache != null) return;
+		
+		allysByDistanceCache = new Hashtable<Integer, Vector<AIAlly>>();
+		
+		int range = (Integer) this.curObject.getProperty("rangeOfVisibility");
+		
+		int x1 = curObject.getMapPoint().getX() - range;
+		if (x1 < 0) x1 = 0;
+		int x2 = curObject.getMapPoint().getX() + range;
+		if (x2 >= map.getWidth()) x2 = map.getWidth() - 1;
+		int y1 = curObject.getMapPoint().getY() - range;
+		if (y1 < 0) y1 = 0;
+		int y2 = curObject.getMapPoint().getY() + range;
+		if (y2 >= map.getHeight()) y2 = map.getHeight() - 1;
+		
+		MapPoint point = null;
+		MapPoint curObjectPoint = curObject.getMapPoint();
+		Integer distance;
+		
+		allysAll = new Vector<AIAlly>();
+		
+		for (int x = x1; x <= x2; x++) {
+			for (int y = y1; y <= y2; y++) {
+				point = new MapPoint(x, y);
+				if (canSee(point)) {
+					distance = MapDistance.distance(map, point, curObjectPoint);
+					Vector<AIAlly> allys = allysByDistanceCache.get(distance);
+					if (allys == null) allys = getAllys(point);
+					else allys.addAll(allys);
+					allysByDistanceCache.put(distance, allys);
+					allysAll.addAll(allys);
+				}
+			}
+		}
+		
 	}
 	
 	/**
