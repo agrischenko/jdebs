@@ -4,7 +4,7 @@ import org.keplerproject.luajava.LuaState;
 import org.keplerproject.luajava.LuaStateFactory;
 
 /**
- * Реализация глобального класса отвечающего за создание и подготовку скриптовго движка LUA
+ * Реализация глобального класса отвечающего за создание и подготовку скриптовго движка LUA (синглтон)
  * @author AAntonenko
  */
 public class ScriptCore {
@@ -16,7 +16,7 @@ public class ScriptCore {
 	private static final String pathToFactoriesScript = "scripts/factories.lua";
 	
 	/**
-	 * Функция получения объекта ScriptCore (синглтон)
+	 * Функция получения объекта ScriptCore
 	 * @return объект ScriptCore
 	 */
 	public static ScriptCore getScriptCore() {

@@ -23,16 +23,16 @@ public class AITest {
 		
 		//Установка пути к файлу скрипта
 		me.setProperty("script", "test/scripts/testscript.lua");
-		
+
 		//Установка дальности видимости у юнита
 		me.setProperty("rangeOfVisibility", 5);
 		
 		//Добавление юнита на карту (в позицию 5,5)
 		map.addObject(5, 5, me);
-		
+
 		//Получение действия которое хочет выполнить юнит (вычисляется на основании скрипта)
 		Action action = AICore.getAction(me, map);
-		
+
 		//Вывод полученного действия на консоль
 		if (action != null) {
 			System.out.printf("Action.type = '%s'\n", action.getType());
@@ -42,6 +42,7 @@ public class AITest {
 		else {
 			System.out.printf("Action is null\n");
 		}
+		
 	}
 	
 }
