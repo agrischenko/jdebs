@@ -35,7 +35,7 @@ public class TabbedColumnLoader extends ResourceLoader {
 		if (colName.equalsIgnoreCase("id"))
 			id = value;
 		else
-			resourceManager.putResource(domainName+"."+id+"."+colName, new Resource(parseColumnObject(colName, value)));		
+			resourceManager.putResource(domainName+"."+id+"."+colName, parseColumnObject(colName, value));		
 	}
 
 	protected Object parseColumnObject(String colName, String value) {

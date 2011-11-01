@@ -54,12 +54,12 @@ public class MapDisplay extends Component {
 						recalcSceneImage();
 						setPreferredSize(new Dimension(sceneImage.getWidth(), sceneImage.getWidth()));
 						repaint();
-						((JViewport)getParent()).updateUI();
 					}
 				}
 			}
 		});
 		
+		createSceneImage();
 	}
 	
 	private void recalcSceneImage() {
@@ -71,7 +71,6 @@ public class MapDisplay extends Component {
 	@Override
 	public void paint(Graphics g) {
 		// рисуем буфер картинки
-		createSceneImage();
 		g.drawImage(sceneImage, 0, 0, this);
 	}
 
@@ -101,7 +100,7 @@ public class MapDisplay extends Component {
 			
 			if (obj instanceof GameObject) {
 				GameObject gm = (GameObject) obj;
-				Image im = (Image) (gm.getProperty("graphics.defaultImage").get());
+				Image im = (Image) (gm.getProperty("graphics.defaultImage"));
 				g.drawImage(im, x, y, cellWidth, cellHeight, this);
 			}
 		}
