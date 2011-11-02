@@ -1,12 +1,8 @@
 package net.debs.fino;
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Hashtable;
-
-import javax.imageio.ImageIO;
 
 import net.debs.fino.ai.AICore;
 import net.debs.fino.res.ResourceManager;
@@ -16,7 +12,7 @@ import net.debs.fino.res.ResourceManager;
  * @author AGrischenko
  *
  */
-public class GameObject extends ComplexMapObject {
+public class GameObject extends MapObject {
 
 	public final static String UNDEFINED_ID = "<undefined>";
 	
