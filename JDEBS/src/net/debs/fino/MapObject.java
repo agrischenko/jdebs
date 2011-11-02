@@ -23,6 +23,5 @@ public abstract class MapObject {
 	public void setPivotPoint(MapPoint pivotPoint) {
 		this.pivotPoint = pivotPoint;
 	}
-	
-	
+
 }
