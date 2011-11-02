@@ -34,7 +34,7 @@ public class AIMap {
 	private Hashtable<MapPoint, Vector<AIAlly>> allysCache = new Hashtable<MapPoint, Vector<AIAlly>>();
 	
 	//кэш союзников по расстоянию
-	private Hashtable<Integer, Vector<AIAlly>> allysByDistanceCache = new Hashtable<Integer, Vector<AIAlly>>();
+	private Hashtable<Integer, Vector<AIAlly>> allysByDistanceCache = null;
 	
 	//кэш всех союзников
 	private Vector<AIAlly> allysAll = null;
@@ -43,6 +43,14 @@ public class AIMap {
 	{
 		this.map = map;
 		this.curObject = object;
+	}
+	
+	/**
+	 * Возвращает текущий объект (для которого выполняется скрипт)
+	 * @return текущий объект AIMe
+	 */
+	public AIMe getMe(){
+		return AICore.gAiMe;
 	}
 	
 	/**
@@ -64,7 +72,8 @@ public class AIMap {
 		// Преобразование объектов из GameObject -> AIGameObject
 		for (GameObject object : objects) {
 			if (aiObjects == null) aiObjects = new Vector<AIGameObject>();
-			aiObjects.add(new AIGameObject(object, map));
+			AIGameObject aiGameObject = new AIGameObject(object);
+			aiObjects.add(aiGameObject);
 		}
 		
 		return aiObjects;
@@ -90,7 +99,7 @@ public class AIMap {
 			for (GameObject object : objects) {
 				String faction = (String) object.getProperty("faction");
 				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					enemies.add(new AIEnemy(object, this.map));
+					enemies.add(new AIEnemy(object));
 				}
 			}
 			
@@ -122,7 +131,7 @@ public class AIMap {
 			for (GameObject object : objects) {
 				String faction = (String) object.getProperty("faction");
 				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					allys.add(new AIAlly(object, this.map));
+					allys.add(new AIAlly(object));
 				}
 			}
 			
@@ -154,7 +163,7 @@ public class AIMap {
 			for (GameObject object : objects) {
 				String faction = (String) object.getProperty("faction");
 				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					enemies.add(new AIEnemy(object, this.map));
+					enemies.add(new AIEnemy(object));
 				}
 			}
 			
@@ -181,12 +190,12 @@ public class AIMap {
 		
 			String curObjectFaction = (String) this.curObject.getProperty("faction");
 		
-			// Отбор объектов у которых другая фракция
+			// Отбор объектов у которых такая же фракция
 			Vector<AIAlly> allys = new Vector<AIAlly>();
 			for (GameObject object : objects) {
 				String faction = (String) object.getProperty("faction");
 				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					allys.add(new AIAlly(object, this.map));
+					allys.add(new AIAlly(object));
 				}
 			}
 			
@@ -230,7 +239,7 @@ public class AIMap {
 		cacheEnemysByDistance();
 		Vector<AIEnemy> enemys = null;
 		
-		for (int d = 0; d <= range; d++) {
+		for (int d = 1; d <= range; d++) {
 			enemys = enemysByDistanceCache.get(d);
 			if ((enemys != null) && (!enemys.isEmpty())) return enemys.firstElement();
 		}
@@ -249,12 +258,54 @@ public class AIMap {
 		cacheAllysByDistance();
 		Vector<AIAlly> allys = null;
 		
-		for (int d = 0; d <= range; d++) {
+		for (int d = 1; d <= range; d++) {
 			allys = allysByDistanceCache.get(d);
 			if ((allys != null) && (!allys.isEmpty())) return allys.firstElement();
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Возвращает коллекцию всех видимых противников в указаном радиусе
+	 * @param range радиус для поиска противников
+	 * @return вектор объектов, если объектов нет возвращается null
+	 */
+	public Vector<AIEnemy> getEnemysInRange(Integer range){
+		
+		cacheEnemysByDistance();
+		
+		Vector<AIEnemy> enemysInRange = new Vector<AIEnemy>();
+		
+		for (int i = 1; i <= range; i++) {
+			Vector<AIEnemy> enemys = enemysByDistanceCache.get(i);
+			if (enemys != null) enemysInRange.addAll(enemys);
+		}
+		
+		if (enemysInRange.isEmpty()) return null;
+		
+		return enemysInRange;
+	}
+	
+	/**
+	 * Возвращает коллекцию всех видимых союзников в указаном радиусе
+	 * @param range радиус для поиска союзников
+	 * @return вектор объектов, если объектов нет возвращается null
+	 */
+	public Vector<AIAlly> getAllysInRange(Integer range){
+		
+		cacheEnemysByDistance();
+		
+		Vector<AIAlly> allysInRange = new Vector<AIAlly>();
+		
+		for (int i = 1; i <= range; i++) {
+			Vector<AIAlly> allys = allysByDistanceCache.get(i);
+			if (allys != null) allysInRange.addAll(allys);
+		}
+		
+		if (allysInRange.isEmpty()) return null;
+		
+		return allysInRange;
 	}
 	
 	/**
@@ -290,7 +341,7 @@ public class AIMap {
 					distance = MapDistance.distance(map, point, curObjectPoint);
 					Vector<AIEnemy> enemys = enemysByDistanceCache.get(distance);
 					if (enemys == null) enemys = getEnemys(point);
-					else enemys.addAll(enemys);
+					else enemys.addAll(getEnemys(point));
 					enemysByDistanceCache.put(distance, enemys);
 					enemysAll.addAll(enemys);
 				}
@@ -332,7 +383,7 @@ public class AIMap {
 					distance = MapDistance.distance(map, point, curObjectPoint);
 					Vector<AIAlly> allys = allysByDistanceCache.get(distance);
 					if (allys == null) allys = getAllys(point);
-					else allys.addAll(allys);
+					else allys.addAll(getAllys(point));
 					allysByDistanceCache.put(distance, allys);
 					allysAll.addAll(allys);
 				}
@@ -354,7 +405,7 @@ public class AIMap {
 			// Проверка находится ли запрошенная координата в области видимости (проверка расстояния)
 			if (point.getDistanceTo(this.curObject.getMapPoint()) > (Integer) curObject.getProperty("rangeOfVisibility")) visibilityCache.put(point, false);
 			
-			//Проверка не преграждена ли линия видимости к запрошенной координате
+			// Проверка не преграждена ли линия видимости к запрошенной координате
 			else visibilityCache.put(point, MapVisibility.see(map, curObject.getMapPoint(), point));
 			
 		}
