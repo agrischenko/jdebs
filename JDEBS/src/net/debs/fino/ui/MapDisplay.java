@@ -12,9 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
-import java.util.Vector;
 
-import net.debs.fino.ComplexMapObject;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 import net.debs.fino.MapObject;
@@ -145,43 +143,19 @@ public class MapDisplay extends Component {
 
 	private void drawScene(Graphics2D g) {
 		drawObjects(g);
-		int mb = 1024*1024;
-		Runtime runtime = Runtime.getRuntime();
-        //Print used memory
-        System.out.println("Used Memory:"
-            + (runtime.totalMemory() - runtime.freeMemory()) / mb);
-        //Print free memory
-        System.out.println("Free Memory:"
-            + runtime.freeMemory() / mb);
-        //Print total available memory
-        System.out.println("Total Memory:" + runtime.totalMemory() / mb);
-        //Print Maximum available memory
-        System.out.println("Max Memory:" + runtime.maxMemory() / mb);
 	}
 
 	private void drawObjects(Graphics2D g) {
-		MapObject obj;
-		for (obj = map.getFirstObject(); obj!=null; obj = map.getNextObject()){
-			Vector<MapObject> localObjects = null;
-			if (obj instanceof ComplexMapObject) {
-				// get all local visible simple objects
-				localObjects = ((ComplexMapObject) obj).getAllObjects();
-			} else {
-				// add as local object
-				localObjects = new Vector<MapObject>();
-				localObjects.add(obj);
-			}
-
-			for (MapObject mapObject : localObjects) {
-				MapPoint point = mapObject.getMapPoint();
-				int x = point.getX() * cellSideLen;
-				int y = point.getY() * cellSideLen;
-				
-				if (mapObject instanceof GameObject) {
-					GameObject gm = (GameObject) mapObject;
-					Image im = (Image) (gm.getProperty("graphics.defaultImage"));
-					g.drawImage(im, x, y, cellSideLen, cellSideLen, this);
-				}
+		MapObject object;
+		for (object = map.getFirstObject(); object!=null; object = map.getNextObject()){
+			MapPoint point = object.getMapPoint();
+			int x = point.getX() * cellSideLen;
+			int y = point.getY() * cellSideLen;
+			
+			if (object instanceof GameObject) {
+				GameObject gm = (GameObject) object;
+				Image im = (Image) (gm.getProperty("graphics.defaultImage"));
+				g.drawImage(im, x, y, cellSideLen, cellSideLen, this);
 			}
 		}
 	}
@@ -266,5 +240,20 @@ public class MapDisplay extends Component {
 		if (miniControl!=null) {
 			miniControl.updateArea(sceneImage, viewPort);
 		}
+	}
+	
+	public void showMemoryStatus() {
+		int mb = 1024*1024;
+		Runtime runtime = Runtime.getRuntime();
+        //Print used memory
+        System.out.println("Used Memory:"
+            + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+        //Print free memory
+        System.out.println("Free Memory:"
+            + runtime.freeMemory() / mb);
+        //Print total available memory
+        System.out.println("Total Memory:" + runtime.totalMemory() / mb);
+        //Print Maximum available memory
+        System.out.println("Max Memory:" + runtime.maxMemory() / mb);
 	}
 }
