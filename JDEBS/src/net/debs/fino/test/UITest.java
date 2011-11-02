@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 import net.debs.fino.res.ResourceManager;
+import net.debs.fino.resolver.ResolverCore;
 import net.debs.fino.ui.MapDisplay;
 import net.debs.fino.ui.MiniMapDisplay;
 
@@ -30,11 +31,24 @@ public class UITest extends JFrame {
 		map.setWidth(30);
 		map.setHeight(30);
 
-		map.addObject(5, 5, new GameObject("warrior","blue"));
-		map.addObject(7, 5, new GameObject("archer","Green"));
-		map.addObject(10, 8, new GameObject("chupa","red"));
-		map.addObject(6, 6, new GameObject("elephant","gray"));
-		map.addObject(29, 5, new GameObject("chupa","red"));
+		//map.addObject(5, 5, new GameObject("warrior","blue"));
+		//map.addObject(7, 5, new GameObject("archer","Green"));
+		//map.addObject(10, 8, new GameObject("chupa","red"));
+		//map.addObject(6, 6, new GameObject("elephant","gray"));
+		//map.addObject(29, 5, new GameObject("chupa","red"));
+		
+		GameObject object1 = new GameObject("warrior","blue");
+		object1.setId("1");
+		object1.setProperty("script", "test/scripts/testscript.lua");
+
+		GameObject object2 = new GameObject("archer","Green");
+		object2.setId("2");
+		object2.setProperty("script", "test/scripts/testscript.lua");
+
+		map.addObject(5, 5, object1);
+		map.addObject(7, 5, object2);
+		
+		ResolverCore.setPathToActionScript("test/scripts");
 		
 		getContentPane().setLayout(new BorderLayout(2,10));
 		MapDisplay dspmap = new MapDisplay(map);
@@ -44,7 +58,10 @@ public class UITest extends JFrame {
 		MiniMapDisplay minimap = new MiniMapDisplay(dspmap);
 		minimap.addDisplay(dspmap);
 		tools.add(minimap, BorderLayout.NORTH);
-		tools.add(new JPanel(), BorderLayout.CENTER);
+
+		DebugToolset toolset = new DebugToolset(dspmap);
+		
+		tools.add(toolset, BorderLayout.CENTER);
 		
 		setVisible(true);
 		
