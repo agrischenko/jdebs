@@ -1,9 +1,11 @@
 package net.debs.fino.test;
 
 import java.awt.BorderLayout;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
@@ -15,7 +17,11 @@ import net.debs.fino.ui.MiniMapDisplay;
 public class UITest extends JFrame {
 
 	public static void main(String[] args) {
-		new UITest().start();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new UITest().start();
+			}
+		});
 	}
 
 	private void start() {

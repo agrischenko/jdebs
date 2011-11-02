@@ -16,11 +16,11 @@ public class DebsMap {
 	/**
 	 *  Размер карты по ширине в клетках
 	 */
-	protected Integer width = 256;
+	protected Integer width = 25;
 	/**
 	 *  Размер карты по высоте в клетках
 	 */
-	protected Integer height = 256;
+	protected Integer height = 25;
 	/**
 	 * Объекты, размещенные на карте
 	 */

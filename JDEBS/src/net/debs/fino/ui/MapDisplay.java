@@ -261,7 +261,7 @@ public class MapDisplay extends Component {
 		return map;
 	}
 	
-	public void redraw() {
+	public synchronized void redraw() {
 		createLandscapeImage();
 		createSceneImage();
 		repaint();
