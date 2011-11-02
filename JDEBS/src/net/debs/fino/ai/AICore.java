@@ -14,26 +14,38 @@ import org.keplerproject.luajava.LuaState;
  */
 public class AICore {
 
+	public static DebsMap gMap = null;
+	public static GameObject gObject = null;
+	
+	public static AIMap gAiMap = null;
+	public static AIMe gAiMe = null;
+	
 	/**
 	 * Возвращает действие которое вычисляется скриптом
 	 * @param gameObject игровой объект для которого
 	 * @return вектор объектов
 	 */
-	public static Action getAction(GameObject gameObject, DebsMap map) {
+	public static Action getAction(GameObject object, DebsMap map) {
 		Action action = new Action();
 
 		LuaState L = ScriptCore.getScriptCore().getLuaState();
 
+		gMap = map;
+		gObject = object;
+		
+		gAiMap = new AIMap(gMap, gObject);
+		gAiMe = new AIMe(gObject);
+		
 		L.pushJavaObject(action);
 		L.setGlobal("action");
 		
-		L.pushJavaObject(new AIMap(map, gameObject));
+		L.pushJavaObject(gAiMap);
 		L.setGlobal("map");
 		
-		L.pushJavaObject(new AIMe(gameObject, map));
+		L.pushJavaObject(gAiMe);
 		L.setGlobal("me");
 		
-		if (L.LdoFile(gameObject.getProperty("script").toString()) != 0) System.out.println(String.valueOf(L.error()));
+		if (L.LdoFile(object.getProperty("script").toString()) != 0) System.out.println(String.valueOf(L.error()));
 		
 		L.close(); 
 		
