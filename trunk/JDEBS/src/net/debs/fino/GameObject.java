@@ -69,7 +69,10 @@ public class GameObject extends MapObject {
 	 * @param key ключ свойства
 	 */
 	public Object getProperty(String key) {
-		return properties.get(key);
+		Object prop = properties.get(key);
+		if (prop==null)
+			System.err.println(String.format("Property \"%s\" does not exists in GameObject::%s", key, getId()));
+		return prop;
 	}
 
 	/**
@@ -108,5 +111,5 @@ public class GameObject extends MapObject {
 	public Action getAction(DebsMap map) {
 		return AICore.getAction(this, map);
 	}
-	
+		
 }

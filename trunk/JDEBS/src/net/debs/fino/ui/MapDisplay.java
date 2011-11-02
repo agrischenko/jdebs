@@ -256,4 +256,15 @@ public class MapDisplay extends Component {
         //Print Maximum available memory
         System.out.println("Max Memory:" + runtime.maxMemory() / mb);
 	}
+
+	public DebsMap getDebsMap() {
+		return map;
+	}
+	
+	public void redraw() {
+		createLandscapeImage();
+		createSceneImage();
+		repaint();
+		updateControls();
+	}
 }
