@@ -16,9 +16,14 @@ public class GameObject extends MapObject {
 
 	public final static String UNDEFINED_ID = "<undefined>";
 	
+	private static int idcount = 0; 
+	
 	private String id = UNDEFINED_ID;
 	
 	public GameObject() {
+		
+		id = String.valueOf(GameObject.idcount++);
+		
 		Image defaultImage = null;
 		try {
 			defaultImage = ResourceManager.loadImage("resources/overrides/warrior.gif ");
@@ -69,18 +74,21 @@ public class GameObject extends MapObject {
 	 * @param key ключ свойства
 	 */
 	public Object getProperty(String key) {
-		Object prop = properties.get(key);
-		if (prop==null)
-			System.err.println(String.format("Property \"%s\" does not exists in GameObject::%s", key, getId()));
+		Object prop = getPropertyWithoutCheck(key);
+		if (prop == null) System.err.println(String.format("Property \"%s\" does not exists in GameObject::%s", key, getId()));
 		return prop;
 	}
 
+	private Object getPropertyWithoutCheck(String key) {
+		return properties.get(key);
+	}
+	
 	/**
 	 * Установить свойство объекта
 	 * @return старое значение по этому ключу. Если значение отсутствует - значит null
 	 */
 	public Object setProperty(String key, Object value) {
-		Object oldValue = getProperty(key);
+		Object oldValue = getPropertyWithoutCheck(key);
 		properties.put(key, value);
 		return oldValue;
 	}
