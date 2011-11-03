@@ -28,7 +28,7 @@ public class AICore {
 	public static Action getAction(GameObject object, DebsMap map) {
 		Action action = new Action();
 
-		LuaState L = ScriptCore.getScriptCore().getLuaState();
+		LuaState L = ScriptCore.getScriptCore().getLuaStateForAiScripts();
 
 		gMap = map;
 		gObject = object;

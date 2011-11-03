@@ -1,6 +1,5 @@
 package net.debs.fino.res;
 
-import java.awt.Color;
 import java.awt.Point;
 
 public class ModelsLoader extends TabbedColumnLoader {

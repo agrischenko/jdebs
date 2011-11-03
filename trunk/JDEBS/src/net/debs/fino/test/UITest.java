@@ -1,7 +1,6 @@
 package net.debs.fino.test;
 
 import java.awt.BorderLayout;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,11 +9,12 @@ import javax.swing.SwingUtilities;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 import net.debs.fino.res.ResourceManager;
-import net.debs.fino.resolver.ResolverCore;
 import net.debs.fino.ui.MapDisplay;
 import net.debs.fino.ui.MiniMapDisplay;
 
 public class UITest extends JFrame {
+
+	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -45,16 +45,18 @@ public class UITest extends JFrame {
 		
 		GameObject object1 = new GameObject("warrior","blue");
 		object1.setId("1");
+		object1.setProperty("speed", 5);
 		object1.setProperty("script", "test/scripts/testscript.lua");
 
 		GameObject object2 = new GameObject("archer","Green");
 		object2.setId("2");
-		object2.setProperty("script", "test/scripts/testscript.lua");
+		object2.setProperty("speed", 5);
+		object2.setProperty("script", "test/scripts/testscript2.lua");
 
 		map.addObject(5, 5, object1);
 		map.addObject(7, 5, object2);
 		
-		ResolverCore.setPathToActionScript("test/scripts");
+		//ResolverCore.setPathToActionScript("test/scripts");
 		
 		getContentPane().setLayout(new BorderLayout(2,10));
 		MapDisplay dspmap = new MapDisplay(map);

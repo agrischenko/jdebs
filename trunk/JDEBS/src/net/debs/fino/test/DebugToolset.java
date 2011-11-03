@@ -1,10 +1,8 @@
 package net.debs.fino.test;
 
 import java.awt.Component;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -58,12 +56,12 @@ public class DebugToolset extends JPanel {
 		@Override
 		public String doInBackground() {
 			DebsMap map = display.getDebsMap();
-			while(true) {
-				long tm = System.currentTimeMillis();
+//			while(true) {
+//				long tm = System.currentTimeMillis();
 				Vector<MapObject> allObjects = new Vector<MapObject>(map.getAllMapObjects());
 //				System.out.println(String.format("collection created in %d ms", System.currentTimeMillis() - tm));
 
-				tm = System.currentTimeMillis();
+//				tm = System.currentTimeMillis();
 				for (MapObject mapObject : allObjects) {
 					if (mapObject instanceof GameObject) {
 						GameObject object = (GameObject) mapObject;
@@ -73,7 +71,7 @@ public class DebugToolset extends JPanel {
 				}
 //				System.out.println(String.format("lua processed in %d ms", System.currentTimeMillis() - tm));
 
-				tm = System.currentTimeMillis();
+//				tm = System.currentTimeMillis();
 				synchronized (display) {
 					display.redraw();
 					try {
@@ -83,7 +81,8 @@ public class DebugToolset extends JPanel {
 					}
 				}
 //				System.out.println(String.format("Redraw in %d ms", System.currentTimeMillis() - tm));
-			}
+			//}
+			return "";
 		}
 
 		@Override

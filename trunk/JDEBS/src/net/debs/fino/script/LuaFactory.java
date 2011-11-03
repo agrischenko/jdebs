@@ -7,7 +7,7 @@ import net.debs.fino.MapPoint;
  * @author AAntonenko
  */
 public class LuaFactory {
-	
+		
 	/**
 	 * Создание объекта MapPoint
 	 * @return объект MapPoint
