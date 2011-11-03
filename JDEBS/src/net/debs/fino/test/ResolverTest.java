@@ -3,6 +3,7 @@ package net.debs.fino.test;
 import net.debs.fino.Action;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
+import net.debs.fino.MapPoint;
 import net.debs.fino.resolver.ResolverCore;
 
 public class ResolverTest {
@@ -20,16 +21,18 @@ public class ResolverTest {
 
 		//Создание объекта тестового юнита
 		GameObject object = new GameObject();
-						
+		object.setProperty("speed", 5);
+		
 		//Добавление юнита на карту (в позицию 5,5)
 		map.addObject(5, 5, object);
 		
 		//Создание действия "testaction"
 		Action action = new Action();
-		action.setType("testaction");
+		action.setType("move");
+		action.setMapPoint(new MapPoint(1, 1));
 		
 		//Задание пути к папке со скриптами действий
-		ResolverCore.setPathToActionScript("test/scripts");
+		ResolverCore.setPathToActionScript("scripts/actions");
 		
 		//Выполнение действия
 		ResolverCore.resolveAction(object, action, map);

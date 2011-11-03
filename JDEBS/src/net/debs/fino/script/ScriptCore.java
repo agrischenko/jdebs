@@ -12,8 +12,13 @@ public class ScriptCore {
 	private static ScriptCore script = null;
 	
 	private LuaFactory factory = null;
+	private LuaError error = null;
 	
 	private static final String pathToFactoriesScript = "scripts/factories.lua";
+	
+	private static final String pathToCoreActionsScript = "scripts/coreactions.lua";
+	
+	private static final String pathToCoreAiScriptScript = "";
 	
 	/**
 	 * Функция получения объекта ScriptCore
@@ -36,11 +41,41 @@ public class ScriptCore {
 	 * @return объект LuaState подготовленный к работе
 	 */
 	public LuaState getLuaState() {
+		
+		error = new LuaError();
+		
 		LuaState L = LuaStateFactory.newLuaState();
 		L.openLibs();
+		
 		L.pushJavaObject(ScriptCore.getScriptCore().getLuaFactory());
 		L.setGlobal("LuaFactory");
-		if (L.LdoFile(pathToFactoriesScript) != 0) System.err.println(String.valueOf(L.error()));
+		
+		if (L.LdoFile(pathToFactoriesScript) != 0) System.err.println("Ошибка подготовки скрипта: " + String.valueOf(L.error()));
+		
+		return L;
+	}
+	
+	public LuaState getLuaStateForActions(){
+		LuaState L = this.getLuaState();
+		
+		L.pushJavaObject(new LuaDnd());
+		L.setGlobal("dnd");
+		
+		L.pushJavaObject(this.error);
+		L.setGlobal("LuaError");
+		
+		if (pathToCoreActionsScript.length() != 0)
+			if (L.LdoFile(pathToCoreActionsScript) != 0) System.err.println("Ошибка подготовки скрипта для выполнения действия :" + String.valueOf(L.error()));
+		
+		return L;
+	}
+	
+	public LuaState getLuaStateForAiScripts(){
+		LuaState L = this.getLuaState();
+		
+		if (pathToCoreAiScriptScript.length() != 0)
+			if (L.LdoFile(pathToCoreAiScriptScript) != 0) System.err.println("Ошибка подготовки скрипта для выполнения ai скрипта :" + String.valueOf(L.error()));
+		
 		return L;
 	}
 	
@@ -51,6 +86,12 @@ public class ScriptCore {
 	private LuaFactory getLuaFactory() {
 		if (factory == null) factory = new LuaFactory();
 		return factory;
+	}
+	
+	public String getError(){
+		String err = error.getError(); 
+		if  (err == null) return "";
+		return err;
 	}
 	
 }

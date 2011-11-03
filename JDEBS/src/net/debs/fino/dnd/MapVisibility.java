@@ -223,6 +223,8 @@ public class MapVisibility {
 		//Получение объектов содержащихся по указанным координатам
 		Vector<MapObject> objects = MapVisibility.map.getMapObjects(new MapPoint(x, y));
 		
+		if (objects == null) return true;
+		
 		//Проверка если хоть один объект по указанным координатам через который нельзя видеть
 		for (MapObject object : objects) {
 			if (object instanceof GameObject) {

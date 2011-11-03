@@ -21,10 +21,10 @@ public class Action {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public MapPoint getPoint() {
+	public MapPoint getMapPoint() {
 		return point;
 	}
-	public void setPoint(MapPoint point) {
+	public void setMapPoint(MapPoint point) {
 		this.point = point;
 	}
 	

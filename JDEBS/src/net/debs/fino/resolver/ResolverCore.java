@@ -16,7 +16,7 @@ import net.debs.fino.script.ScriptCore;
  */
 public class ResolverCore {
 
-	private static String pathToActionScript = ""; 
+	private static String pathToActionScript = "scripts/actions"; 
 
 	/**
 	 * Устанавливает путь к папке со скриптами действий
@@ -49,7 +49,7 @@ public class ResolverCore {
         }
 		
         //Выполнение файла действия (В скрипте доступны: object - объект который выполняет дейсвтие; action - выполняемое действие; map - карта на которой выполняется дейсвтие)
-        LuaState L = ScriptCore.getScriptCore().getLuaState();
+        LuaState L = ScriptCore.getScriptCore().getLuaStateForActions();
 		
 		L.pushJavaObject(object);
 		L.setGlobal("object");
@@ -60,15 +60,13 @@ public class ResolverCore {
 		L.pushJavaObject(map);
 		L.setGlobal("map");
 		
-		String error = "";
-		L.pushJavaObject(error);
-		L.setGlobal("error");
-		
 		if (L.LdoFile(pathScript) != 0) System.err.println(String.valueOf(L.error()));
         
 		L.close();
+
+		String error = ScriptCore.getScriptCore().getError();
 		
-		if (error.length()!=0) System.err.println("Ошибка выполнения дайствия '" + action.getType() + "' для объекта с Id '" + object.getId() + "': " + error);
+		if (error.length()!=0) System.err.println("Ошибка выполнения действия '" + action.getType() + "' для объекта с Id '" + object.getId() + "': " + error);
 		
 	}
 	
