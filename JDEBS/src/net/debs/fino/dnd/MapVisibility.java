@@ -1,7 +1,5 @@
 package net.debs.fino.dnd;
 
-import java.util.Vector;
-
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 import net.debs.fino.MapObject;
@@ -221,16 +219,14 @@ public class MapVisibility {
 	private static boolean CanSee(int x, int y) {
 		
 		//Получение объектов содержащихся по указанным координатам
-		Vector<MapObject> objects = MapVisibility.map.getMapObjects(new MapPoint(x, y));
+		MapObject object = MapVisibility.map.getMapObject(new MapPoint(x, y));
 		
-		if (objects == null) return true;
+		if (object == null) return true;
 		
-		//Проверка если хоть один объект по указанным координатам через который нельзя видеть
-		for (MapObject object : objects) {
-			if (object instanceof GameObject) {
-				GameObject gameObject = (GameObject) object;
-				if ((Boolean) gameObject.getProperty("visible") == false) return false;
-			}
+		//Проверка если можно ли видеть через объект по указанным координатам
+		if (object instanceof GameObject) {
+			GameObject gameObject = (GameObject) object;
+			return (Boolean) gameObject.getProperty("visible");
 		}
 		
 		return true;

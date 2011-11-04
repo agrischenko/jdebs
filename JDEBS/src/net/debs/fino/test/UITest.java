@@ -46,17 +46,21 @@ public class UITest extends JFrame {
 		GameObject object1 = new GameObject("warrior","blue");
 		object1.setId("1");
 		object1.setProperty("speed", 5);
+		object1.setProperty("faction", "1");
+		object1.setProperty("rangeOfVisibility", 10);
+		object1.setProperty("visible", true);
 		object1.setProperty("script", "test/scripts/testscript.lua");
 
 		GameObject object2 = new GameObject("archer","Green");
 		object2.setId("2");
+		object2.setProperty("faction", "2");
 		object2.setProperty("speed", 5);
+		object2.setProperty("rangeOfVisibility", 10);
+		object2.setProperty("visible", true);
 		object2.setProperty("script", "test/scripts/testscript2.lua");
 
 		map.addObject(5, 5, object1);
 		map.addObject(7, 5, object2);
-		
-		//ResolverCore.setPathToActionScript("test/scripts");
 		
 		getContentPane().setLayout(new BorderLayout(2,10));
 		MapDisplay dspmap = new MapDisplay(map);

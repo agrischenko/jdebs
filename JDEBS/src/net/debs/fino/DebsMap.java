@@ -2,7 +2,6 @@ package net.debs.fino;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Vector;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -78,14 +77,17 @@ public class DebsMap {
 		sol.setPivotPoint(new MapPoint(x, y));
 		objects.put(sol.getPivotPoint(), sol);
 	}
-	
-	public Vector<MapObject> getMapObjects(MapPoint point){
-		//TODO: Необходимо вернуть вектор объектов MapObject содержащихся в указанной точке 
-		return null;
+		
+	public MapObject getMapObject(MapPoint point){
+		return this.objects.get(point);
 	}
 	
-	public Vector<GameObject> getGameObjects(MapPoint point){
-		//TODO: Необходимо вернуть вектор объектов GameObject содержащихся в указанной точке 
+	public GameObject getGameObject(MapPoint point){
+		MapObject objectInPoint = this.objects.get(point);
+		if (objectInPoint instanceof GameObject) {
+			GameObject go = (GameObject) objectInPoint;
+			return go;
+		}
 		return null;
 	}
 	
@@ -111,5 +113,7 @@ public class DebsMap {
 		// TODO Auto-generated method stub
 		return objects.values();
 	}
+	
+	
 	
 }

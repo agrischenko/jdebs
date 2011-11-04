@@ -45,7 +45,7 @@ public class MapPoint {
 	}
 	
 	/**
-	 * Получить рстояние между этой точкой и другой
+	 * Получить расстояние между этой точкой и другой
 	 * @param p другая точка
 	 * @return расстояния
 	 */
@@ -59,5 +59,21 @@ public class MapPoint {
 	public String toString() {
 		return String.valueOf(x) + ":" + String.valueOf(y);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof MapPoint) {
+			MapPoint mp = (MapPoint) obj;
+			return (this.getX() == mp.getX()) && (this.getY() == mp.getY());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return  x*y+y-x;
+	}
+	
+	
 	
 }

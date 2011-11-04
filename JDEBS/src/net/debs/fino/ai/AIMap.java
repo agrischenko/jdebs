@@ -22,7 +22,8 @@ public class AIMap {
 	private Hashtable<MapPoint, Boolean> visibilityCache = new Hashtable<MapPoint, Boolean>();
 	
 	//кэш противников
-	private Hashtable<MapPoint, Vector<AIEnemy>> enemysCache = new Hashtable<MapPoint, Vector<AIEnemy>>();
+	private Hashtable<MapPoint, Boolean> isEnemyCache = new Hashtable<MapPoint, Boolean>();
+	private Hashtable<MapPoint, AIEnemy> enemysCache = new Hashtable<MapPoint, AIEnemy>();
 	
 	//кэш противников по расстоянию
 	private Hashtable<Integer, Vector<AIEnemy>> enemysByDistanceCache = null;
@@ -31,7 +32,8 @@ public class AIMap {
 	private Vector<AIEnemy> enemysAll = null;
 	
 	//кэш союзников
-	private Hashtable<MapPoint, Vector<AIAlly>> allysCache = new Hashtable<MapPoint, Vector<AIAlly>>();
+	private Hashtable<MapPoint, Boolean> isAllyCache = new Hashtable<MapPoint, Boolean>();
+	private Hashtable<MapPoint, AIAlly> allysCache = new Hashtable<MapPoint, AIAlly>();
 	
 	//кэш союзников по расстоянию
 	private Hashtable<Integer, Vector<AIAlly>> allysByDistanceCache = null;
@@ -54,94 +56,20 @@ public class AIMap {
 	}
 	
 	/**
-	 * Возвращает коллекцию объектов AIGameObject находящихся по переданным координатам (доступен из скрипта)
+	 * Возвращает объект AIGameObject находящихся по переданным координатам (доступен из скрипта)
 	 * @param point координаты
-	 * @return вектор объектов, если объектов нет возвращается null
+	 * @return объект, если объекта по координатам нет нет возвращается null
 	 */
-	public Vector<AIGameObject> getGameObjects(MapPoint point) {
+	public AIGameObject getGameObject(MapPoint point) {
 		
 		// Если запрошенная координата не видна текущему объекту - то возвращаем null
 		if (!canSee(point)) return null;
 		
-		// Массив объектов которые расположены на карте
-		Vector<GameObject> objects = this.map.getGameObjects(point);
+		GameObject object = this.map.getGameObject(point);
+		if (object == null) return null; 
 		
-		// Массив объектов которые будут доступны из скрипта (необходимо преобразовать из GameObject -> AIGameObject)
-		Vector<AIGameObject> aiObjects = null;
+		return new AIGameObject(object);
 		
-		// Преобразование объектов из GameObject -> AIGameObject
-		for (GameObject object : objects) {
-			if (aiObjects == null) aiObjects = new Vector<AIGameObject>();
-			AIGameObject aiGameObject = new AIGameObject(object);
-			aiObjects.add(aiGameObject);
-		}
-		
-		return aiObjects;
-		
-	}
-	
-	/**
-	 * Возвращает коллекцию объектов AIEnemy находящихся по переданным координатам (доступен из скрипта)
-	 * @param point координаты
-	 * @return вектор объектов, если объектов нет возвращается null
-	 */
-	public Vector<AIEnemy> getEnemys(MapPoint point){
-		
-		if (enemysCache.get(point) == null) {
-		
-			// Получение всех объектов стоящих на указанной клетке
-			Vector<GameObject> objects = this.map.getGameObjects(point);
-		
-			String curObjectFaction = (String) this.curObject.getProperty("faction");
-		
-			// Отбор объектов у которых другая фракция
-			Vector<AIEnemy> enemies	= new Vector<AIEnemy>();
-			for (GameObject object : objects) {
-				String faction = (String) object.getProperty("faction");
-				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					enemies.add(new AIEnemy(object));
-				}
-			}
-			
-			enemysCache.put(point, enemies);
-			
-		}
-		
-		if (enemysCache.get(point).isEmpty()) return null;
-		
-		return enemysCache.get(point);
-	}
-	
-	/**
-	 * Возвращает коллекцию объектов AIAlly находящихся по переданным координатам (доступен из скрипта)
-	 * @param point координаты
-	 * @return вектор объектов, если объектов нет возвращается null
-	 */
-	public Vector<AIAlly> getAllys(MapPoint point){
-		
-		if (allysCache.get(point) == null) {
-			
-			// Получение всех объектов стоящих на указанной клетке
-			Vector<GameObject> objects = this.map.getGameObjects(point);
-		
-			String curObjectFaction = (String) this.curObject.getProperty("faction");
-		
-			// Отбор объектов у которых другая фракция
-			Vector<AIAlly> allys = new Vector<AIAlly>();
-			for (GameObject object : objects) {
-				String faction = (String) object.getProperty("faction");
-				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					allys.add(new AIAlly(object));
-				}
-			}
-			
-			allysCache.put(point, allys);
-			
-		}
-		
-		if (allysCache.get(point).isEmpty()) return null;
-		
-		return allysCache.get(point);
 	}
 	
 	/**
@@ -151,29 +79,36 @@ public class AIMap {
 	 */
 	public AIEnemy getEnemy(MapPoint point){
 		
-		if (enemysCache.get(point) == null) {
-		
-			// Получение всех объектов стоящих на указанной клетке
-			Vector<GameObject> objects = this.map.getGameObjects(point);
-		
-			String curObjectFaction = (String) this.curObject.getProperty("faction");
-		
-			// Отбор объектов у которых другая фракция
-			Vector<AIEnemy> enemies	= new Vector<AIEnemy>();
-			for (GameObject object : objects) {
-				String faction = (String) object.getProperty("faction");
-				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					enemies.add(new AIEnemy(object));
+		//Если объекта нет в кэше
+		if (isEnemyCache.get(point) == null){
+			
+			// Получение объекта стоящего на указанной клетке
+			GameObject object = this.map.getGameObject(point);
+			AIEnemy enemy = null;
+			
+			if (object != null){
+			
+				String objectFaction = (String) object.getProperty("faction");
+			
+				//Если у объекта задана фракция
+				if (objectFaction != null){
+				
+					String curObjectFaction = (String) this.curObject.getProperty("faction");
+			
+					//Если фракция объекта не та же что и у текущего
+					if (!objectFaction.equalsIgnoreCase(curObjectFaction)) {
+						enemy = new AIEnemy(object);
+						enemysCache.put(point, enemy);
+					}
 				}
 			}
 			
-			enemysCache.put(point, enemies);
+			isEnemyCache.put(point, true);
+			return enemy;
 			
 		}
 		
-		if (enemysCache.get(point).isEmpty()) return null;
-		
-		return enemysCache.get(point).firstElement();
+		return enemysCache.get(point);
 	}
 	
 	/**
@@ -183,48 +118,53 @@ public class AIMap {
 	 */
 	public AIAlly getAlly(MapPoint point){
 		
-		if (allysCache.get(point) == null) {
+		//Если объекта нет в кэше
+		if (isAllyCache.get(point) == null){
 			
-			// Получение всех объектов стоящих на указанной клетке
-			Vector<GameObject> objects = this.map.getGameObjects(point);
-		
-			String curObjectFaction = (String) this.curObject.getProperty("faction");
-		
-			// Отбор объектов у которых такая же фракция
-			Vector<AIAlly> allys = new Vector<AIAlly>();
-			for (GameObject object : objects) {
-				String faction = (String) object.getProperty("faction");
-				if (faction != null && !faction.equalsIgnoreCase(curObjectFaction)) {
-					allys.add(new AIAlly(object));
+			// Получение объекта стоящего на указанной клетке
+			GameObject object = this.map.getGameObject(point);
+			AIAlly ally = null;
+			
+			if (object != null){
+			
+				String objectFaction = (String) object.getProperty("faction");
+			
+				//Если у объекта задана фракция
+				if (objectFaction != null){
+				
+					String curObjectFaction = (String) this.curObject.getProperty("faction");
+			
+					//Если фракция объекта та же что и у текущего
+					if (objectFaction.equalsIgnoreCase(curObjectFaction)) {
+						ally = new AIAlly(object);
+						allysCache.put(point, ally);
+					}
 				}
 			}
 			
-			allysCache.put(point, allys);
+			isAllyCache.put(point, true);
+			return ally;
 			
 		}
 		
-		if (allysCache.get(point).isEmpty()) return null;
-		
-		return allysCache.get(point).firstElement();
+		return allysCache.get(point);
 	}
 	
 	/**
 	 * Возвращает коллекцию всех видимых противников (AIEnemy)
-	 * @return вектор объектов, если объектов нет возвращается null
+	 * @return вектор объектов, если объектов нет возвращается пустой вектор
 	 */
 	public Vector<AIEnemy> getEnemys(){
 		cacheEnemysByDistance();
-		if (enemysAll.isEmpty()) return null; 
 		return enemysAll;
 	}
 	
 	/**
 	 * Возвращает коллекцию всех видимых союзников (AIAlly)
-	 * @return вектор объектов, если объектов нет возвращается null
+	 * @return вектор объектов, если объектов нет возвращается пустой вектор
 	 */
 	public Vector<AIAlly> getAllys(){
 		cacheAllysByDistance();
-		if (allysAll.isEmpty()) return null; 
 		return allysAll;
 	}
 	
@@ -336,18 +276,27 @@ public class AIMap {
 		
 		for (int x = x1; x <= x2; x++) {
 			for (int y = y1; y <= y2; y++) {
+				
 				point = new MapPoint(x, y);
+				
 				if (canSee(point)) {
-					distance = MapDistance.distance(map, point, curObjectPoint);
-					Vector<AIEnemy> enemys = enemysByDistanceCache.get(distance);
-					if (enemys == null) enemys = getEnemys(point);
-					else enemys.addAll(getEnemys(point));
-					enemysByDistanceCache.put(distance, enemys);
-					enemysAll.addAll(enemys);
+					
+					AIEnemy enemy = getEnemy(point);
+					if (enemy != null)
+					{
+						distance = MapDistance.distance(map, point, curObjectPoint);
+						
+						Vector<AIEnemy> enemys = enemysByDistanceCache.get(distance);
+						if (enemys == null) enemys = new Vector<AIEnemy>();
+						
+						enemys.add(enemy);
+						enemysAll.add(enemy);
+						
+						enemysByDistanceCache.put(distance, enemys);
+					}
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -378,18 +327,27 @@ public class AIMap {
 		
 		for (int x = x1; x <= x2; x++) {
 			for (int y = y1; y <= y2; y++) {
+				
 				point = new MapPoint(x, y);
+				
 				if (canSee(point)) {
-					distance = MapDistance.distance(map, point, curObjectPoint);
-					Vector<AIAlly> allys = allysByDistanceCache.get(distance);
-					if (allys == null) allys = getAllys(point);
-					else allys.addAll(getAllys(point));
-					allysByDistanceCache.put(distance, allys);
-					allysAll.addAll(allys);
+					
+					AIAlly ally = getAlly(point);
+					if (ally != null)
+					{
+						distance = MapDistance.distance(map, point, curObjectPoint);
+						
+						Vector<AIAlly> allys = allysByDistanceCache.get(distance);
+						if (allys == null) allys = new Vector<AIAlly>();
+						
+						allys.add(ally);
+						allysAll.add(ally);
+						
+						allysByDistanceCache.put(distance, allys);
+					}
 				}
 			}
 		}
-		
 	}
 	
 	/**

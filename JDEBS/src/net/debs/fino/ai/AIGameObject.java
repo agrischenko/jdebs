@@ -98,7 +98,7 @@ public class AIGameObject {
 	/**
 	 * Возвращает коллекцию всех видимых противников в указаном радиусе от объекта
 	 * @param range радиус для поиска противников
-	 * @return вектор объектов, если объектов нет возвращается null
+	 * @return вектор объектов, если объектов нет возвращается пустой вектор
 	 */
 	public Vector<AIEnemy> getEnemysInRange(Integer range){
 		
@@ -111,15 +111,13 @@ public class AIGameObject {
 			if (enemys != null) enemysInRange.addAll(enemys);
 		}
 		
-		if (enemysInRange.isEmpty()) return null;
-		
 		return enemysInRange;
 	}
 	
 	/**
 	 * Возвращает коллекцию всех видимых союзников в указаном радиусе от объекта
 	 * @param range радиус для поиска союзников
-	 * @return вектор объектов, если объектов нет возвращается null
+	 * @return вектор объектов, если объектов нет возвращается пустой вектор
 	 */
 	public Vector<AIAlly> getAllysInRange(Integer range){
 		
@@ -131,8 +129,6 @@ public class AIGameObject {
 			Vector<AIAlly> allys = allysByDistanceCache.get(i);
 			if (allys != null) allysInRange.addAll(allys);
 		}
-		
-		if (allysInRange.isEmpty()) return null;
 		
 		return allysInRange;
 	}
@@ -146,15 +142,16 @@ public class AIGameObject {
 		
 		Vector<AIEnemy> allEnemys = AICore.gAiMap.getEnemys();
 		
-		MapPoint point = null;
 		MapPoint curObjectPoint = object.getMapPoint();
 		Integer distance;
+		
+		enemysByDistanceCache = new Hashtable<Integer, Vector<AIEnemy>>();
 		
 		for (AIEnemy enemy : allEnemys) {
 			distance = enemy.getDistanceTo(curObjectPoint);
 			Vector<AIEnemy> enemys = enemysByDistanceCache.get(distance);
-			if (enemys == null) enemys = AICore.gAiMap.getEnemys(point);
-			else enemys.addAll(AICore.gAiMap.getEnemys(point));
+			if (enemys == null) enemys = new Vector<AIEnemy>();
+			enemys.add(enemy);
 			enemysByDistanceCache.put(distance, enemys);
 		}
 	}
@@ -168,15 +165,16 @@ public class AIGameObject {
 		
 		Vector<AIAlly> allAllys = AICore.gAiMap.getAllys();
 		
-		MapPoint point = null;
 		MapPoint curObjectPoint = object.getMapPoint();
 		Integer distance;
+		
+		allysByDistanceCache = new Hashtable<Integer, Vector<AIAlly>>();
 		
 		for (AIAlly ally : allAllys) {
 			distance = ally.getDistanceTo(curObjectPoint);
 			Vector<AIAlly> allys = allysByDistanceCache.get(distance);
-			if (allys == null) allys = AICore.gAiMap.getAllys(point);
-			else allys.addAll(AICore.gAiMap.getAllys(point));
+			if (allys == null) allys = new Vector<AIAlly>();
+			allys.add(ally);
 			allysByDistanceCache.put(distance, allys);
 		}
 	}

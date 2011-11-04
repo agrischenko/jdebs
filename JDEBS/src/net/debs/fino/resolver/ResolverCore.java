@@ -34,6 +34,9 @@ public class ResolverCore {
 	 */
 	public static void resolveAction(GameObject object, Action action, DebsMap map){
 		
+		//Если действие не задано - то выходим
+		if (action.getType() == null || action.getType().equalsIgnoreCase("")) return;
+		
 		//Если не задан путь к папке со скриптами дейсвтий - то выходим
 		if (ResolverCore.pathToActionScript.equalsIgnoreCase("")) {
 			System.err.println("Не задан путь к папке со скриптами дейсвтий");
