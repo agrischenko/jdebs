@@ -10,7 +10,7 @@ enemyMapPoint = enemy:getMapPoint();
 enemyX = enemyMapPoint:getX();
 enemyY = enemyMapPoint:getY();
 
-print("enemy ("..enemyX..":"..enemyY..")");
+--print("enemy ("..enemyX..":"..enemyY..")");
 
 x = enemyX;
 y = enemyY;
@@ -26,6 +26,8 @@ if meY < enemyY then
 elseif meY > enemyY then
 	y = y + 1;
 end
+
+--print("move ("..x..":"..y..")");
 
 action:setType("move");
 action:setMapPoint(MapPoint(x, y));

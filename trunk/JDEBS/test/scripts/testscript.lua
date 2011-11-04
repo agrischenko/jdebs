@@ -1,7 +1,21 @@
+dy = me:getProperty("dy");
+
+if dy == nil then
+	print("nil");
+	dy = -1;
+end
+
 x = me:getMapPoint():getX();
 y = me:getMapPoint():getY();
 
-y = y + 1
+y = y + dy;
+
+if not map:passable(MapPoint(x, y)) then
+	dy = - dy;
+	y = y + 2*dy;
+end
+
+me:setProperty("dy", dy);
 
 action:setType("move");
 action:setMapPoint(MapPoint(x, y));

@@ -371,4 +371,12 @@ public class AIMap {
 		return visibilityCache.get(point);
 	}
 	
+	public Boolean passable(MapPoint point){
+		return map.passable(point);
+	}
+	
+	public Boolean seeable(MapPoint point){
+		return map.seeable(point);
+	}
+	
 }

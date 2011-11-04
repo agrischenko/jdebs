@@ -114,6 +114,35 @@ public class DebsMap {
 		return objects.values();
 	}
 	
+	/**
+	 * Определяет можно ли проходить через клетку карты
+	 * @param point позиция для проверки
+	 * @return ture - клетка проходимая; false - не проходимая
+	 */
+	public Boolean passable(MapPoint point){
+		System.out.println(point);
+		if (point.getX() < 0 | point.getX() >= width | point.getY() < 0 | point.getY() >= height) {
+			System.out.println("false");
+			return false;
+		}
+		GameObject go = getGameObject(point);
+		if (go == null) return true; 
+		Boolean passable = (Boolean) go.getProperty("passable");
+		if (passable == null) return true; 
+		return passable;
+	}
 	
-	
+	/**
+	 * Определяет можно ли видеть через клетку карты
+	 * @param point позиция для проверки
+	 * @return ture - через клетку можно видеть; false - клетка преграждает видимость
+	 */
+	public Boolean seeable(MapPoint point){
+		GameObject go = getGameObject(point);
+		if (go == null) return true; 
+		Boolean seeable = (Boolean) go.getProperty("seeable");
+		if (seeable == null) return true; 
+		return seeable;
+	}
+
 }

@@ -13,7 +13,8 @@ public class AIMe extends AIAlly{
 	}
 
 	public Object setProperty(String key, Object value){
-		return this.object.setProperty(key, value);
+		System.out.println("seting "+ key + "=" + value);
+		return this.object.setAiProperty(key, value);
 	}
 	
 }
