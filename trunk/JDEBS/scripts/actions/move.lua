@@ -16,4 +16,12 @@ if distance > speed then
 	return;
 end
 
+x = movePoint:getX();
+y = movePoint:getY();
+
+if x < 0 or x >= map:getWidth() or y < 0 or y >= map:getHeight() then
+	Error("Then object tries to go beyond the map ("..movePoint:toString()..")");
+	return;
+end
+
 map:moveObject(movePoint, object);
