@@ -226,7 +226,7 @@ public class MapVisibility {
 		//Проверка если можно ли видеть через объект по указанным координатам
 		if (object instanceof GameObject) {
 			GameObject gameObject = (GameObject) object;
-			return (Boolean) gameObject.getProperty("visible");
+			return (Boolean) gameObject.getProperty("seeable");
 		}
 		
 		return true;

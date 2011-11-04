@@ -48,7 +48,8 @@ public class UITest extends JFrame {
 		object1.setProperty("speed", 5);
 		object1.setProperty("faction", "1");
 		object1.setProperty("rangeOfVisibility", 10);
-		object1.setProperty("visible", true);
+		object1.setProperty("seeable", true);
+		object1.setProperty("passable", false);
 		object1.setProperty("script", "test/scripts/testscript.lua");
 
 		GameObject object2 = new GameObject("archer","Green");
@@ -56,7 +57,8 @@ public class UITest extends JFrame {
 		object2.setProperty("faction", "2");
 		object2.setProperty("speed", 5);
 		object2.setProperty("rangeOfVisibility", 10);
-		object2.setProperty("visible", true);
+		object2.setProperty("seeable", true);
+		object2.setProperty("passable", false);
 		object2.setProperty("script", "test/scripts/testscript2.lua");
 
 		map.addObject(5, 5, object1);
