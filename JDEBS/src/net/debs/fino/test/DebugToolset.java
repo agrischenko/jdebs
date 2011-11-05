@@ -20,6 +20,8 @@ public class DebugToolset extends JPanel {
 
 	private static final long serialVersionUID = -5494456214747371073L;
 
+	private static Vector<MapObject> allObjects = null;
+	
 	private static final String NEXT_UNIT_STEP = "nextUnitStep";
 	DebugButtonsAdapter bad = new DebugButtonsAdapter();
 
@@ -58,7 +60,8 @@ public class DebugToolset extends JPanel {
 			DebsMap map = display.getDebsMap();
 //			while(true) {
 //				long tm = System.currentTimeMillis();
-				Vector<MapObject> allObjects = new Vector<MapObject>(map.getAllMapObjects());
+//				Vector<MapObject> allObjects = new Vector<MapObject>(map.getAllMapObjects());
+				if (allObjects == null) allObjects = new Vector<MapObject>(map.getAllMapObjects());
 //				System.out.println(String.format("collection created in %d ms", System.currentTimeMillis() - tm));
 
 //				tm = System.currentTimeMillis();
