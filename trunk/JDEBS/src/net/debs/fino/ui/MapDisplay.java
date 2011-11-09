@@ -2,15 +2,13 @@ package net.debs.fino.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 
 import net.debs.fino.DebsMap;
@@ -22,8 +20,8 @@ public class MapDisplay extends Component {
 
 	private static final long serialVersionUID = -1187739180606177056L;
 
-	protected int MINCELLSIZE = 20;
-	protected int MAXCELLSIZE = 50;
+	public static int MINCELLSIZE = 20;
+	public static int MAXCELLSIZE = 50;
 	
 	protected int cellSideLen = MAXCELLSIZE;
 
@@ -43,16 +41,13 @@ public class MapDisplay extends Component {
 	public MapDisplay(DebsMap map) {
 		this.map = map;
 
-		MouseAdapter mad = new MouseControl();
-		
+		DisplayMapMouseControl mad = new DisplayMapMouseControl(this);
 		addMouseListener(mad);
 		addMouseWheelListener(mad);
 		addMouseMotionListener(mad);
 		
 		viewPort = new Rectangle(0, 0, 1, 1);
 		recalcOfflineImageSize();
-		viewPort.width = Math.min(cw, imw);
-		viewPort.height = Math.min(ch, imh);
 		repairViewPort();
 		createLandscapeImage();
 		createSceneImage();
@@ -74,7 +69,7 @@ public class MapDisplay extends Component {
 		
 	}
 	
-	private void recalcOfflineImageSize() {
+	public void recalcOfflineImageSize() {
 		imw = map.getWidth() * cellSideLen;
 		imh = map.getHeight() * cellSideLen;
 		
@@ -92,7 +87,7 @@ public class MapDisplay extends Component {
 		
 	}
 
-	private void repairViewPort() {
+	public void repairViewPort() {
 		int maxX = imw-cw;
 		int maxY = imh-ch;
 		if (imw<cw || viewPort.x<0) viewPort.x = 0;
@@ -169,62 +164,6 @@ public class MapDisplay extends Component {
 			g.drawLine(0, pos, imw, pos);
 	}
 	
-	private class MouseControl extends MouseAdapter {
-		int mdx = -1, mdy = -1;
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			if (e.isControlDown()) {
-				if (mdx>=0) {
-					int x = e.getXOnScreen(), y = e.getYOnScreen();
-					viewPort.x += mdx - x;
-					viewPort.y += mdy - y;
-					repairViewPort();
-					repaint();
-				}
-				mdx = e.getXOnScreen();
-				mdy = e.getYOnScreen();
-			}
-		}
-
-		@Override
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if (e.isControlDown()) {
-				int oldw = cellSideLen;
-				int mod = e.getWheelRotation() * 2;
-				cellSideLen -= mod;
-				if (cellSideLen<MINCELLSIZE) {
-					cellSideLen = MINCELLSIZE;
-				} else if (cellSideLen>MAXCELLSIZE) {
-					cellSideLen = MAXCELLSIZE;
-				}
-				
-				if (oldw!=cellSideLen) {
-					int oldImw = imw, oldImh = imh;
-
-					recalcOfflineImageSize();
-					// update viewport center point
-					viewPort.x += (imw - oldImw) / 2;
-					viewPort.y += (imh - oldImh) / 2;
-					viewPort.width = Math.min(cw, imw);
-					viewPort.height = Math.min(ch, imh);
-
-					createLandscapeImage();
-					createSceneImage();
-
-					repairViewPort();
-					
-					repaint();
-				}
-			}
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			mdx = -1;
-			mdy = -1;
-		}
-	}
-
 	public void addMiniControl(MiniMapDisplay control) {
 		miniControl = control;
 	}
@@ -242,21 +181,6 @@ public class MapDisplay extends Component {
 		}
 	}
 	
-	public void showMemoryStatus() {
-		int mb = 1024*1024;
-		Runtime runtime = Runtime.getRuntime();
-        //Print used memory
-        System.out.println("Used Memory:"
-            + (runtime.totalMemory() - runtime.freeMemory()) / mb);
-        //Print free memory
-        System.out.println("Free Memory:"
-            + runtime.freeMemory() / mb);
-        //Print total available memory
-        System.out.println("Total Memory:" + runtime.totalMemory() / mb);
-        //Print Maximum available memory
-        System.out.println("Max Memory:" + runtime.maxMemory() / mb);
-	}
-
 	public DebsMap getDebsMap() {
 		return map;
 	}
@@ -266,5 +190,32 @@ public class MapDisplay extends Component {
 		createSceneImage();
 		repaint();
 		updateControls();
+	}
+
+	public Rectangle getViewPort() {
+		return viewPort;
+	}
+
+	public int getCellSideLen() {
+		return cellSideLen;
+	}
+
+	public Dimension getOffscreenImageDimension() {
+		return new Dimension(imw, imh);
+	}
+
+	public void updateFinalImage() {
+		createLandscapeImage();
+		createSceneImage();
+	}
+
+	public int setCellSideLen(int i) {
+		cellSideLen = i;
+		if (cellSideLen<MapDisplay.MINCELLSIZE) {
+			cellSideLen = MapDisplay.MINCELLSIZE;
+		} else if (cellSideLen>MapDisplay.MAXCELLSIZE) {
+			cellSideLen = MapDisplay.MAXCELLSIZE;
+		}
+		return cellSideLen;
 	}
 }
