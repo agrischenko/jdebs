@@ -20,8 +20,8 @@ public class DebugToolset extends JPanel {
 
 	private static final long serialVersionUID = -5494456214747371073L;
 
-	private static Vector<MapObject> allObjects = null;
-	
+	private static Vector<MapObject> allObjects = null; 
+
 	private static final String NEXT_UNIT_STEP = "nextUnitStep";
 	DebugButtonsAdapter bad = new DebugButtonsAdapter();
 
@@ -58,10 +58,11 @@ public class DebugToolset extends JPanel {
 		@Override
 		public String doInBackground() {
 			DebsMap map = display.getDebsMap();
-//			while(true) {
+			while(true) {
 //				long tm = System.currentTimeMillis();
-//				Vector<MapObject> allObjects = new Vector<MapObject>(map.getAllMapObjects());
+				
 				if (allObjects == null) allObjects = new Vector<MapObject>(map.getAllMapObjects());
+
 //				System.out.println(String.format("collection created in %d ms", System.currentTimeMillis() - tm));
 
 //				tm = System.currentTimeMillis();
@@ -78,14 +79,14 @@ public class DebugToolset extends JPanel {
 				synchronized (display) {
 					display.redraw();
 					try {
-						Thread.sleep(300);
+						Thread.sleep(1);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 //				System.out.println(String.format("Redraw in %d ms", System.currentTimeMillis() - tm));
-			//}
-			return "";
+			}
+			//return "";
 		}
 
 		@Override
