@@ -120,7 +120,6 @@ public class DebsMap {
 	 * @return ture - клетка проходимая; false - не проходимая
 	 */
 	public Boolean passable(MapPoint point){
-		System.out.println(point);
 		if (point.getX() < 0 | point.getX() >= width | point.getY() < 0 | point.getY() >= height) {
 			System.out.println("false");
 			return false;
