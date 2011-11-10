@@ -41,6 +41,32 @@ public class AIMap {
 	//кэш всех союзников
 	private Vector<AIAlly> allysAll = null;
 	
+
+	//Тест видимости
+	public static void main(String [] args){
+		
+		DebsMap map = new DebsMap();
+		map.setWidth(30);
+		map.setHeight(30);
+		
+		GameObject me = new GameObject();
+		me.setProperty("rangeOfVisibility", 20);
+		me.setProperty("seeable", true);
+		me.setProperty("passable", false);
+		map.addObject(0, 0, me);
+		
+		GameObject object1 = new GameObject();
+		object1.setProperty("seeable", false);
+		object1.setProperty("passable", false);
+
+		map.addObject(5, 5, object1);
+		map.addObject(4, 5, object1);
+		map.addObject(5, 4, object1);
+		
+		System.out.println(map.seeable(new MapPoint(6, 6)));
+		
+	}
+	
 	public AIMap(DebsMap map, GameObject object)
 	{
 		this.map = map;
@@ -367,16 +393,36 @@ public class AIMap {
 			else visibilityCache.put(point, MapVisibility.see(map, curObject.getMapPoint(), point));
 			
 		}
-		
+
 		return visibilityCache.get(point);
 	}
 	
+	/**
+	 * Определяет проходимый ли квадрат
+	 * @param point координаты квадрата
+	 * @return true - проходимый; false - не проходимый; null - квадрат не виден для текущего объекта
+	 */
 	public Boolean passable(MapPoint point){
+		if (!canSee(point)) return null;
 		return map.passable(point);
 	}
 	
+	/**
+	 * Определяет не приграждает ли квадрат линию видимости
+	 * @param point координаты квадрата
+	 * @return true - не преграждает; false - преграждает; null - квадрат не виден для текущего объекта
+	 */
 	public Boolean seeable(MapPoint point){
+		if (!canSee(point)) return null;
 		return map.seeable(point);
+	}
+
+	public int getWidth() {
+		return this.map.getWidth();
+	}
+
+	public int getHeight() {
+		return this.map.getHeight();
 	}
 	
 }
