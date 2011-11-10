@@ -21,7 +21,7 @@ public class MapDistance {
 		int dy = Math.abs(p1.getY() - p2.getY());
 		int minD = Math.min(dx, dy);
 		int maxD = Math.max(dx, dy);
-		return ((int) (1.5 * minD)) + maxD - minD;
+		return (minD >> 1) + maxD;
 	}
 	
 }
