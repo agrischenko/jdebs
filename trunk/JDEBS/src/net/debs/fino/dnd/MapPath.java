@@ -11,7 +11,6 @@ import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 import net.debs.fino.MapPoint;
 import net.debs.fino.Path;
-import net.debs.fino.ai.AIMap;
 
 /**
  * Реализация класа для определения пути по правилам DnD
@@ -19,7 +18,7 @@ import net.debs.fino.ai.AIMap;
  */
 public class MapPath {
 
-	private static AIMap gMap = null;
+	private static DebsMap gMap = null;
 	private static MapPoint gP1 = null;
 	private static MapPoint gP2 = null;
 	
@@ -56,7 +55,7 @@ public class MapPath {
 		map.addObject(10, 9, object1);
 		map.addObject(9, 10, object1);
 		
-		Path path = getPath(new AIMap(map, me), new MapPoint(0,0), new MapPoint(10, 10));
+		Path path = path(map, new MapPoint(0,0), new MapPoint(10, 10));
 		
 		if(path == null)
 			System.out.println("No path");
@@ -67,6 +66,14 @@ public class MapPath {
 				System.out.print(path.get(j));
 			}
 		}
+
+		System.out.println();
+		
+		for (int i = 0; i < path.distance(); i++) {
+			System.out.println(i + ": " + path.getMapPointByDistance(i));
+		}
+		
+		
 	}
 	
 	/**
@@ -76,7 +83,7 @@ public class MapPath {
 	 * @param p2 точка до которой будет происходить  определение пути
 	 * @return путь от точки p1 до точки p2
 	 */
-	public static Path getPath(AIMap map, MapPoint p1, MapPoint p2){
+	public static Path path(DebsMap map, MapPoint p1, MapPoint p2){
 		
 		gMap = map;
 		gP1 = p1;
@@ -234,6 +241,7 @@ public class MapPath {
 			tmppath.addFirst(iPoint);
 			iPoint = iPoint.from;
 		}
+		tmppath.addFirst(gP1);
 
 		Path path = new Path();
 		for (int i = 0; i < tmppath.size(); i++) {

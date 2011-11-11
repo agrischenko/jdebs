@@ -9,24 +9,13 @@ if speed == nil then
 	return;
 end
 
-distance = dnd:MapDistance(map, movePoint, objectPoint);
+-- Получение пути в квадрат, в который хочет переместится объект
+path = dnd:MapPath(map, objectPoint, movePoint);
 
-if distance > speed then
-	Error("The object is trying to move a distance greater than its speed");
+if path == nil then
+	Error("No path avalible to square("..movePoint:toString().."");
 	return;
 end
 
-x = movePoint:getX();
-y = movePoint:getY();
-
-if x < 0 or x >= map:getWidth() or y < 0 or y >= map:getHeight() then
-	Error("The object tries to move beyond the map ("..movePoint:toString()..")");
-	return;
-end
-
-if (not map:passable(movePoint)) and (not (x == objectPoint:getX() and y == objectPoint:getY())) then
-	Error("The object tries to move into not passable square("..movePoint:toString()..")");
-	return;
-end
-
-map:moveObject(movePoint, object);
+-- Перемещение объекта в квадрат находящийся на пути на расстоянии равной скорости объекта
+map:moveObject(path:getMapPointByDistance(speed), object);
