@@ -13,7 +13,6 @@ public class AIAlly extends AIGameObject {
 	}
 
 	public Object getProperty(String key){
-		System.out.println("geting " + key + "=" + this.object.getAiProperty(key));
 		return this.object.getAiProperty(key);
 	}
 
