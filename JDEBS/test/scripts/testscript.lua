@@ -1,8 +1,7 @@
 dy = me:getProperty("dy");
 
 if dy == nil then
-	print("nil");
-	dy = -1;
+	dy = -2;
 end
 
 x = me:getMapPoint():getX();
