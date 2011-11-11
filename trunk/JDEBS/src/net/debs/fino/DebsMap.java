@@ -120,10 +120,7 @@ public class DebsMap {
 	 * @return ture - клетка проходимая; false - не проходимая
 	 */
 	public Boolean passable(MapPoint point){
-		if (point.getX() < 0 | point.getX() >= width | point.getY() < 0 | point.getY() >= height) {
-			System.out.println("false");
-			return false;
-		}
+		if (point.getX() < 0 | point.getX() >= width | point.getY() < 0 | point.getY() >= height) return false;
 		GameObject go = getGameObject(point);
 		if (go == null) return true; 
 		Boolean passable = (Boolean) go.getProperty("passable");
