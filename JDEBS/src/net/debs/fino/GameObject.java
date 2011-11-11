@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import net.debs.fino.ai.AICore;
+import net.debs.fino.dnd.Weapon;
 import net.debs.fino.res.ResourceManager;
 
 /**
@@ -118,6 +119,17 @@ public class GameObject extends MapObject {
 	 */
 	public Action getAction(DebsMap map) {
 		return AICore.getAction(this, map);
+	}
+	
+	public Weapon getWeapon(){
+		String weaponName = (String) this.getProperty("weapon");
+		if (weaponName == null) return null;
+		Weapon weapon = (Weapon) ResourceManager.getResource(ResourceManager.WEAPON + "." + weaponName);
+		if (weapon == null) {
+			System.err.println("Gameobject \"" + getId() + "\" have weapon (" + weaponName + ") thet does not contains in  resources");
+			return null;
+		}
+		return weapon;
 	}
 		
 }
