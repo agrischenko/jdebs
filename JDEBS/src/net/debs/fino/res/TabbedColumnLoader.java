@@ -3,7 +3,8 @@ package net.debs.fino.res;
 public class TabbedColumnLoader extends ResourceLoader {
 
 	String columns[];
-	private String id;
+	String id;
+	private int rowNum = 0;
 	String domainName;
 	
 	public TabbedColumnLoader(ResourceManager resourceManager, String domainName) {
@@ -23,7 +24,8 @@ public class TabbedColumnLoader extends ResourceLoader {
 			// columns values
 			if (columns!=null) {
 				for(int i=0; i<columns.length; i++) {
-					parseColumn(columns[i], values[i]);
+					parseColumn(rowNum, columns[i], values[i]);
+					++rowNum;
 				}
 			} else {
 				System.err.println("parse file error: "+filePath);
@@ -31,14 +33,20 @@ public class TabbedColumnLoader extends ResourceLoader {
 		}
 	}
 
-	private void parseColumn(String colName, String value) {
+	protected void parseColumn(Integer rowNum, String colName, String value) {
 		if (colName.equalsIgnoreCase("id"))
 			id = value;
 		else
-			resourceManager.putResource(domainName+"."+id+"."+colName, parseColumnObject(colName, value));		
+			ResourceManager.putResource(domainName+"."+id+"."+colName, parseColumnObject(colName, value));		
 	}
 
 	protected Object parseColumnObject(String colName, String value) {
 		return value;
+	}
+
+	@Override
+	protected void parceEnd() {
+		// TODO Auto-generated method stub
+		
 	}
 }

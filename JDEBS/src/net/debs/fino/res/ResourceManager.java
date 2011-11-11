@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 
@@ -22,6 +23,7 @@ public class ResourceManager {
 
 	public static String MODEL = "model";
 	public static String FACTION = "faction";
+	public static String WEAPON = "weapon";
 	
 	protected static ResourceManager me;
 	
@@ -29,7 +31,7 @@ public class ResourceManager {
 	}
 	
 	public static void showAllResourcesAsText() {
-		Iterator it = me.resources.entrySet().iterator();
+		Iterator<Entry<String, Object>> it = me.resources.entrySet().iterator();
 		while(it.hasNext()) {
 			java.util.Map.Entry<String, Object> entry = (java.util.Map.Entry<String, Object>) it.next();
 			System.out.println(entry.getKey()+" = "+entry.getValue());
@@ -42,6 +44,7 @@ public class ResourceManager {
 		
 		new FactionsLoader(me).load("resources/factions.txt");
 		new ModelsLoader(me).load("resources/models.txt");
+		new WeaponLoader(me).load("resources/weapons.txt");
 		
 		return me;
 	}

@@ -1,0 +1,4 @@
+// weapons
+#name	damage	range	criticalRange	criticalKoef	cost	weight
+sword	1d8	1	19-20	2	15	1.8
+bow	1d6	12	20	3	30	0.9

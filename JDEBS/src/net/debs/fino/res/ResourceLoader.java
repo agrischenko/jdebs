@@ -40,7 +40,11 @@ public abstract class ResourceLoader {
 		for (String line : lines) {
 			parseLine(line);
 		}
+		parceEnd();
 	}
 
 	abstract protected void parseLine(String text);
+	
+	abstract protected void parceEnd();
+	
 }
