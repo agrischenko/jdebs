@@ -16,7 +16,7 @@ public class AIGameObject {
 	protected GameObject object;
 
 	//кэш противников по расстоянию
-	private Hashtable<Integer, Vector<AIEnemy>> enemysByDistanceCache = null;
+	private Hashtable<Integer, Vector<AIEnemy>> enemiesByDistanceCache = null;
 		
 	//кэш союзников по расстоянию
 	private Hashtable<Integer, Vector<AIAlly>> allysByDistanceCache = null;
@@ -68,7 +68,7 @@ public class AIGameObject {
 		Vector<AIEnemy> enemys = null;
 		
 		for (int d = 1; d <= range; d++) {
-			enemys = enemysByDistanceCache.get(d);
+			enemys = enemiesByDistanceCache.get(d);
 			if ((enemys != null) && (!enemys.isEmpty())) return enemys.firstElement();
 		}
 		
@@ -100,14 +100,14 @@ public class AIGameObject {
 	 * @param range радиус для поиска противников
 	 * @return вектор объектов, если объектов нет возвращается пустой вектор
 	 */
-	public Vector<AIEnemy> getEnemysInRange(Integer range){
+	public Vector<AIEnemy> getEnemiesInRange(Integer range){
 		
 		cacheEnemysByDistance();
 		
 		Vector<AIEnemy> enemysInRange = new Vector<AIEnemy>();
 		
 		for (int i = 1; i <= range; i++) {
-			Vector<AIEnemy> enemys = enemysByDistanceCache.get(i);
+			Vector<AIEnemy> enemys = enemiesByDistanceCache.get(i);
 			if (enemys != null) enemysInRange.addAll(enemys);
 		}
 		
@@ -138,21 +138,21 @@ public class AIGameObject {
 	 */
 	private void cacheEnemysByDistance(){
 		
-		if (enemysByDistanceCache != null) return;
+		if (enemiesByDistanceCache != null) return;
 		
 		Vector<AIEnemy> allEnemys = AICore.gAiMap.getEnemys();
 		
 		MapPoint curObjectPoint = object.getMapPoint();
 		Integer distance;
 		
-		enemysByDistanceCache = new Hashtable<Integer, Vector<AIEnemy>>();
+		enemiesByDistanceCache = new Hashtable<Integer, Vector<AIEnemy>>();
 		
 		for (AIEnemy enemy : allEnemys) {
 			distance = enemy.getDistanceTo(curObjectPoint);
-			Vector<AIEnemy> enemys = enemysByDistanceCache.get(distance);
+			Vector<AIEnemy> enemys = enemiesByDistanceCache.get(distance);
 			if (enemys == null) enemys = new Vector<AIEnemy>();
 			enemys.add(enemy);
-			enemysByDistanceCache.put(distance, enemys);
+			enemiesByDistanceCache.put(distance, enemys);
 		}
 	}
 	

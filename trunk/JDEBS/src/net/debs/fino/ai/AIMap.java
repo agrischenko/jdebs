@@ -6,7 +6,7 @@ import java.util.Vector;
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
 import net.debs.fino.MapPoint;
-import net.debs.fino.dnd.MapDistance;
+import net.debs.fino.dnd.MapMask;
 import net.debs.fino.dnd.MapVisibility;
 
 /**
@@ -29,7 +29,7 @@ public class AIMap {
 	private Hashtable<Integer, Vector<AIEnemy>> enemysByDistanceCache = null;
 	
 	//кэш всех противников
-	private Vector<AIEnemy> enemysAll = null;
+	private Vector<AIEnemy> enemiesAll = null;
 	
 	//кэш союзников
 	private Hashtable<MapPoint, Boolean> isAllyCache = new Hashtable<MapPoint, Boolean>();
@@ -40,7 +40,6 @@ public class AIMap {
 	
 	//кэш всех союзников
 	private Vector<AIAlly> allysAll = null;
-	
 
 	//Тест видимости
 	public static void main(String [] args){
@@ -182,7 +181,7 @@ public class AIMap {
 	 */
 	public Vector<AIEnemy> getEnemys(){
 		cacheEnemysByDistance();
-		return enemysAll;
+		return enemiesAll;
 	}
 	
 	/**
@@ -285,43 +284,25 @@ public class AIMap {
 		
 		int range = (Integer) this.curObject.getProperty("rangeOfVisibility");
 		
-		int x1 = curObject.getMapPoint().getX() - range;
-		if (x1 < 0) x1 = 0;
-		int x2 = curObject.getMapPoint().getX() + range;
-		if (x2 >= map.getWidth()) x2 = map.getWidth() - 1;
-		int y1 = curObject.getMapPoint().getY() - range;
-		if (y1 < 0) y1 = 0;
-		int y2 = curObject.getMapPoint().getY() + range;
-		if (y2 >= map.getHeight()) y2 = map.getHeight() - 1;
-		
-		MapPoint point = null;
 		MapPoint curObjectPoint = curObject.getMapPoint();
-		Integer distance;
 		
-		enemysAll = new Vector<AIEnemy>();
-		
-		for (int x = x1; x <= x2; x++) {
-			for (int y = y1; y <= y2; y++) {
+		for (int distance = 1; distance <= range; distance++) {
+			
+			Vector<MapPoint> points = MapMask.getMapPointsByDistance(map, curObjectPoint, distance);
+			
+			Vector<AIEnemy> enemies= new Vector<AIEnemy>();
+			
+			for (MapPoint point : points) {
 				
-				point = new MapPoint(x, y);
-				
-				if (canSee(point)) {
-					
-					AIEnemy enemy = getEnemy(point);
-					if (enemy != null)
-					{
-						distance = MapDistance.distance(map, point, curObjectPoint);
-						
-						Vector<AIEnemy> enemys = enemysByDistanceCache.get(distance);
-						if (enemys == null) enemys = new Vector<AIEnemy>();
-						
-						enemys.add(enemy);
-						enemysAll.add(enemy);
-						
-						enemysByDistanceCache.put(distance, enemys);
-					}
-				}
+				AIEnemy enemy = getEnemy(point);
+
+				enemies.add(enemy);
+				enemiesAll.add(enemy);
+
 			}
+			
+			enemysByDistanceCache.put(distance, enemies);
+			
 		}
 	}
 	
@@ -336,44 +317,27 @@ public class AIMap {
 		
 		int range = (Integer) this.curObject.getProperty("rangeOfVisibility");
 		
-		int x1 = curObject.getMapPoint().getX() - range;
-		if (x1 < 0) x1 = 0;
-		int x2 = curObject.getMapPoint().getX() + range;
-		if (x2 >= map.getWidth()) x2 = map.getWidth() - 1;
-		int y1 = curObject.getMapPoint().getY() - range;
-		if (y1 < 0) y1 = 0;
-		int y2 = curObject.getMapPoint().getY() + range;
-		if (y2 >= map.getHeight()) y2 = map.getHeight() - 1;
-		
-		MapPoint point = null;
 		MapPoint curObjectPoint = curObject.getMapPoint();
-		Integer distance;
 		
-		allysAll = new Vector<AIAlly>();
-		
-		for (int x = x1; x <= x2; x++) {
-			for (int y = y1; y <= y2; y++) {
+		for (int distance = 1; distance <= range; distance++) {
+			
+			Vector<MapPoint> points = MapMask.getMapPointsByDistance(map, curObjectPoint, distance);
+			
+			Vector<AIAlly> allys = new Vector<AIAlly>();
+			
+			for (MapPoint point : points) {
 				
-				point = new MapPoint(x, y);
-				
-				if (canSee(point)) {
-					
-					AIAlly ally = getAlly(point);
-					if (ally != null)
-					{
-						distance = MapDistance.distance(map, point, curObjectPoint);
-						
-						Vector<AIAlly> allys = allysByDistanceCache.get(distance);
-						if (allys == null) allys = new Vector<AIAlly>();
-						
-						allys.add(ally);
-						allysAll.add(ally);
-						
-						allysByDistanceCache.put(distance, allys);
-					}
-				}
+				AIAlly ally = getAlly(point);
+
+				allys.add(ally);
+				allysAll.add(ally);
+
 			}
+			
+			allysByDistanceCache.put(distance, allys);
+			
 		}
+
 	}
 	
 	/**
