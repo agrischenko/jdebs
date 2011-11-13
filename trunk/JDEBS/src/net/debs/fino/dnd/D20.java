@@ -77,7 +77,7 @@ public class D20 {
 	/**
 	 * Определяет результат броска кубика с заданным количеством граней
 	 * @param d количество граней кубика
-	 * @returnрезультат броска
+	 * @return результат броска
 	 */
 	public static Integer d(int d){
 		return (int)(d * Math.random() + 1);
