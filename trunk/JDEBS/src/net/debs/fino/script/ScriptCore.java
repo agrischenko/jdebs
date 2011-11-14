@@ -13,12 +13,13 @@ public class ScriptCore {
 	
 	private LuaFactory factory = null;
 	private LuaError error = null;
+	private LuaRandom random = null;
 	
 	private static final String pathToFactoriesScript = "scripts/factories.lua";
 	
 	private static final String pathToCoreActionsScript = "scripts/coreactions.lua";
 	
-	private static final String pathToCoreAiScriptScript = "";
+	private static final String pathToCoreAiScriptScript = "scripts/coreai.lua";
 	
 	/**
 	 * Функция получения объекта ScriptCore
@@ -43,6 +44,8 @@ public class ScriptCore {
 	public LuaState getLuaState() {
 		
 		error = new LuaError();
+		
+		random = new LuaRandom();
 		
 		LuaState L = LuaStateFactory.newLuaState();
 		L.openLibs();
@@ -72,6 +75,9 @@ public class ScriptCore {
 	
 	public LuaState getLuaStateForAiScripts(){
 		LuaState L = this.getLuaState();
+		
+		L.pushJavaObject(this.random);
+		L.setGlobal("LuaRandom");
 		
 		if (pathToCoreAiScriptScript.length() != 0)
 			if (L.LdoFile(pathToCoreAiScriptScript) != 0) System.err.println("Ошибка подготовки скрипта для выполнения ai скрипта :" + String.valueOf(L.error()));
