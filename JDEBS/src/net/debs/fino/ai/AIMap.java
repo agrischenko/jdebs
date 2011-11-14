@@ -29,7 +29,7 @@ public class AIMap {
 	private Hashtable<Integer, Vector<AIEnemy>> enemysByDistanceCache = null;
 	
 	//кэш всех противников
-	private Vector<AIEnemy> enemiesAll = null;
+	private Vector<AIEnemy> enemiesAll = new Vector<AIEnemy>();
 	
 	//кэш союзников
 	private Hashtable<MapPoint, Boolean> isAllyCache = new Hashtable<MapPoint, Boolean>();
@@ -39,7 +39,7 @@ public class AIMap {
 	private Hashtable<Integer, Vector<AIAlly>> allysByDistanceCache = null;
 	
 	//кэш всех союзников
-	private Vector<AIAlly> allysAll = null;
+	private Vector<AIAlly> allysAll = new Vector<AIAlly>();
 
 	//Тест видимости
 	public static void main(String [] args){
@@ -296,8 +296,10 @@ public class AIMap {
 				
 				AIEnemy enemy = getEnemy(point);
 
-				enemies.add(enemy);
-				enemiesAll.add(enemy);
+				if (enemy != null){
+					enemies.add(enemy);
+					enemiesAll.add(enemy);
+				}
 
 			}
 			
@@ -329,9 +331,11 @@ public class AIMap {
 				
 				AIAlly ally = getAlly(point);
 
-				allys.add(ally);
-				allysAll.add(ally);
-
+				if (ally != null){
+					allys.add(ally);
+					allysAll.add(ally);
+				}
+				
 			}
 			
 			allysByDistanceCache.put(distance, allys);
