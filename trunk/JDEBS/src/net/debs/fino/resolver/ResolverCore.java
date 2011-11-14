@@ -34,6 +34,8 @@ public class ResolverCore {
 	 */
 	public static void resolveAction(GameObject object, Action action, DebsMap map){
 		
+		if (action == null) return;
+		
 		//Если действие не задано - то выходим
 		if (action.getType() == null || action.getType().equalsIgnoreCase("")) return;
 		

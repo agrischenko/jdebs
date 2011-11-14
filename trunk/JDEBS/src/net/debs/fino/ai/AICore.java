@@ -26,6 +26,9 @@ public class AICore {
 	 * @return вектор объектов
 	 */
 	public static Action getAction(GameObject object, DebsMap map) {
+		
+		if (object.getProperty("script") == null) return null;
+		
 		Action action = new Action();
 
 		LuaState L = ScriptCore.getScriptCore().getLuaStateForAiScripts();
