@@ -13,7 +13,7 @@ end
 path = dnd:MapPath(map, objectPoint, movePoint);
 
 if path == nil then
-	Error("No path avalible to square("..movePoint:toString().."");
+	Error("No path avalible to square("..movePoint:toString()..")");
 	return;
 end
 
