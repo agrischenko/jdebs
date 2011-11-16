@@ -37,6 +37,7 @@ public class GameObject extends MapObject {
 	public GameObject(String modelName, String factionName) {
 		Image im = ResourceManager.getModelImage(modelName, factionName);
 		setProperty("graphics.defaultImage", im);
+		setProperty("faction.name", factionName);
 	}
 
 	/**

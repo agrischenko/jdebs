@@ -1,5 +1,7 @@
 package net.debs.fino;
 
+import java.awt.Point;
+
 /**
  * Реализация точки на двумерной карте 
  * @author AGrischenko
@@ -72,6 +74,10 @@ public class MapPoint {
 	@Override
 	public int hashCode() {
 		return  x*y+y-x;
+	}
+
+	public Point getAWTPoint() {
+		return new Point(x, y);
 	}
 	
 	
