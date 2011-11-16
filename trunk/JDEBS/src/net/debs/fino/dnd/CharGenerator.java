@@ -7,6 +7,8 @@ public class CharGenerator {
 	public static final String TYPE_WARRIOR = "warrior";
 	public static final String TYPE_ARCHER = "archer";
 	
+	public static int id = 0;
+	
 	/**
 	 * Генерирует персонажа 3-го уровня по правилам DnD
 	 * @param фракция персонажа
@@ -30,6 +32,8 @@ public class CharGenerator {
 			res = new GameObject("archer", color);
 			res.setProperty("weapon", "bow");
 		}
+		
+		res.setId(String.valueOf(id++));
 		
 		res.setProperty("speed", 6);
 		res.setProperty("faction", faction);

@@ -27,5 +27,10 @@ public class Action {
 	public void setMapPoint(MapPoint point) {
 		this.point = point;
 	}
+	@Override
+	public String toString() {
+		return type + " (id = " + id + " point = " + point + ")";
+	}
+
 	
 }
