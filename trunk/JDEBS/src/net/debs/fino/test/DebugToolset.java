@@ -21,7 +21,8 @@ public class DebugToolset extends JPanel {
 	private static final long serialVersionUID = -5494456214747371073L;
 
 	private static Vector<MapObject> allObjects = null; 
-
+	private static Integer curObject = null;
+	
 	private static final String NEXT_UNIT_STEP = "nextUnitStep";
 	DebugButtonsAdapter bad = new DebugButtonsAdapter();
 
@@ -62,17 +63,25 @@ public class DebugToolset extends JPanel {
 //				long tm = System.currentTimeMillis();
 				
 				if (allObjects == null) allObjects = new Vector<MapObject>(map.getAllMapObjects());
-
+				if (curObject == null) curObject = 0;
+				
+				MapObject mapObject = allObjects.get(curObject);
+				
+				
 //				System.out.println(String.format("collection created in %d ms", System.currentTimeMillis() - tm));
 
 //				tm = System.currentTimeMillis();
-				for (MapObject mapObject : allObjects) {
+				//for (MapObject mapObject : allObjects) {
 					if (mapObject instanceof GameObject) {
 						GameObject object = (GameObject) mapObject;
 						Action action = object.getAction(map);
 						ResolverCore.resolveAction(object, action, map);
 					}
-				}
+				//}
+				
+				curObject++;
+				if (curObject >= allObjects.size()) curObject = 0;
+					
 //				System.out.println(String.format("lua processed in %d ms", System.currentTimeMillis() - tm));
 
 //				tm = System.currentTimeMillis();

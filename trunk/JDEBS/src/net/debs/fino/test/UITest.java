@@ -39,7 +39,7 @@ public class UITest extends JFrame {
 		map.setHeight(30);
 
 		GameObject object1 = CharGenerator.generate("1", "blue", CharGenerator.TYPE_WARRIOR);
-		GameObject object2 = CharGenerator.generate("2", "green", CharGenerator.TYPE_WARRIOR);
+		GameObject object2 = CharGenerator.generate("2", "green", CharGenerator.TYPE_ARCHER);
 		
 		object1.setProperty("script", "test/scripts/testscript.lua");
 		object2.setProperty("script", "test/scripts/testscript2.lua");

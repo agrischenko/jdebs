@@ -5,8 +5,6 @@ if id == nil then
 	return;
 end
 
-print("1");
-
 attackObject = map:getGameObject(id);
 if attackObject == nil then
 	Error("Map does not have object with id = '"..id.."'");
@@ -14,8 +12,6 @@ if attackObject == nil then
 end
 
 objectPoint = object:getMapPoint();
-
-print("2");
 
 speed = object:getProperty("speed");
 if speed == nil then
@@ -29,16 +25,10 @@ if weapon == nil then
 	return;
 end
 
-print("3");
-
 weaponRange = weapon:getRange();
-
-print("3.1");
 
 -- Получение ближайшей клетки с которой объект может атаковать и до которой может дойти
 targetPoint = dnd:NearestAttackMapPoint(map, objectPoint, attackObject:getMapPoint(), speed, weaponRange);
-
-print("4");
 
 -- Если такой клетки нет (она далеко, или до нее нельзя построить путь), то просто движемся к объекту
 -- TODO: перемещять объект по пути к ближайшей клетки с которой можно атаковать
@@ -57,8 +47,6 @@ if targetPoint == nil then
 	
 end
 
-print("5");
-
 -- Перемещаем объект в клетку с которой он может атаковать
 map:moveObject(targetPoint, object);
 
@@ -70,6 +58,7 @@ if attackBase == nil then
 end
 attackRoll = dnd:d(20);
 attack = attackBase + attackRoll;
+Print("attack: "..attack.." (roll: "..attackRoll.." base: "..attackBase..")");
 
 ac = attackObject:getProperty("ac");
 if ac == nil then
@@ -77,12 +66,17 @@ if ac == nil then
 	return;
 end
 
-print("6");
-
 -- Проверка перебросил ли атакующий AC цели (при броске 20 - автопопадение, при броске 1 - автопромах)
 if (ac > attack and attackRoll ~= 20) or attackRoll == 1 then
+	if attackRoll == 1 then
+		Print("miss (automiss attack roll is 1)");
+	else
+	Print("miss (ac: "..ac..")");
+	end
 	return;
 end
+
+Print("hit (ac: "..ac..")");
 
 strengthModifier = dnd:AttributeModifier(object, "strength");
 damage = weapon:getDamage() + strengthModifier;
@@ -97,17 +91,22 @@ if (weapon:inCriticalRange(attackRoll)) then
 		 while i < max do
 		 	damage = damage + weapon:getDamage() + strengthModifier;
 		 end
+		 Print("damage: "..damage.." (critical confirmed)");
+	else
+		Print("damage: "..damage.." (critical not confirmed)");
 	end
+else
+	Print("damage: "..damage);
 end
-
-print("7");
 
 -- Уменьшение hp у атакуемого юнита (если hp<0 удаляем юнита с карты)
 hp = attackObject:getHp();
 hp = hp - damage;
 
 if hp <= 0 then
+	Print("target is dead");
 	map:removeObject(attackObject);
 else
+	Print("target hp: "..hp.." (lost: "..damage..")");
 	attackObject:setHp(hp);
 end

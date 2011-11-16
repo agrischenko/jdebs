@@ -19,7 +19,7 @@ public class MapTactic {
 		map.setWidth(30);
 		map.setHeight(30);
 		
-		MapPoint res = getNearestAttackMapPoint(map, new MapPoint(6, 95), new MapPoint(5, 95), 6, 1);
+		MapPoint res = getNearestAttackMapPoint(map, new MapPoint(6, 17), new MapPoint(5, 15), 6, 1);
 		
 		System.out.println(res);
 		
@@ -39,7 +39,7 @@ public class MapTactic {
 		MapPoint res = null;
 		int resDistance = -1;
 		
-		// Если искомой клеткой является текущая (хватает расстояние и целевая клетка видна)
+		// Если искомой клеткой является текущая (хватает расстояния и целевая клетка видна)
 		if (MapDistance.distance(map, objectPoint, attackPoint) <= distance){
 			if (MapVisibility.see(map, objectPoint, attackPoint)) return new MapPoint(objectPoint.getX(), objectPoint.getY());
 		}
@@ -55,13 +55,20 @@ public class MapTactic {
 					Path path = MapPath.path(map, objectPoint, point);
 					if (path != null){
 						int dist = path.distance();
-						if (resDistance < dist) {
+						if (dist < resDistance || resDistance == -1) {
 							res = point;
 							resDistance = dist;
+						}
+						else if(dist == resDistance && (point.getX() == objectPoint.getX() || point.getY() == objectPoint.getY())){
+							res = point;
 						}
 					}
 				}
 			}
+			
+			//Если к найденому квадрату (с которого можно атаковать) можно пройти по прямой - то больше ничего искать не надо
+			if (res != null && resDistance == MapDistance.distance(map, objectPoint, res)) return res;
+			
 		}
 		
 		return res;
