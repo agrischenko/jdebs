@@ -36,7 +36,7 @@ public class Weapon {
 		
 		// Если критический диапозон не задан, то считаем что это 20
 		if (critivalRangeStr == null){
-			System.err.println("Weapon \"" + this.getName() + "\" does not contains property \"CriticalRange\", using default CriticalRange (20)");
+			System.err.println("Weapon \"" + this.getName() + "\" does not contains property \"criticalRange\", using default criticalRange (20)");
 			return (value == 20);
 		}
 		if (critivalRangeStr.equals("")) return (value == 20);
@@ -53,11 +53,11 @@ public class Weapon {
 	}
 	
 	public int getCriticalKoef(){
-		String criticalKoefStr = (String) this.getProperty("CriticalKoef");
+		String criticalKoefStr = (String) this.getProperty("criticalKoef");
 		
 		// Если критический коэффициент не задан, то считаем что это 2
 		if (criticalKoefStr == null){
-			System.err.println("Weapon \"" + this.getName() + "\" does not contains property \"CriticalKoef\", using default CriticalKoef (2)");
+			System.err.println("Weapon \"" + this.getName() + "\" does not contains property \"criticalKoef\", using default criticalKoef (2)");
 			return 2;
 		}
 		if (criticalKoefStr.equals("")) return 2;

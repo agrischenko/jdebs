@@ -14,6 +14,7 @@ public class ScriptCore {
 	private LuaFactory factory = null;
 	private LuaError error = null;
 	private LuaRandom random = null;
+	private LuaPrint print = null;
 	
 	private static final String pathToFactoriesScript = "scripts/factories.lua";
 	
@@ -44,8 +45,8 @@ public class ScriptCore {
 	public LuaState getLuaState() {
 		
 		error = new LuaError();
-		
 		random = new LuaRandom();
+		print = new LuaPrint();
 		
 		LuaState L = LuaStateFactory.newLuaState();
 		L.openLibs();
@@ -66,6 +67,9 @@ public class ScriptCore {
 		
 		L.pushJavaObject(this.error);
 		L.setGlobal("LuaError");
+		
+		L.pushJavaObject(this.print);
+		L.setGlobal("LuaPrint");
 		
 		if (pathToCoreActionsScript.length() != 0)
 			if (L.LdoFile(pathToCoreActionsScript) != 0) System.err.println("Ошибка подготовки скрипта для выполнения действия :" + String.valueOf(L.error()));

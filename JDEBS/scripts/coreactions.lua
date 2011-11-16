@@ -13,3 +13,7 @@ end
 function Random(rand1, rand2)
 	return LuaRandom:random(rand1, rand2);
 end
+
+function Print(s)
+	LuaPrint:print(s);
+end
