@@ -11,7 +11,7 @@ y = y + dy;
 
 if not map:passable(MapPoint(x, y)) then
 	dy = - dy;
-	y = y + 2*dy;
+	y = y + 2 * dy;
 end
 
 me:setProperty("dy", dy);

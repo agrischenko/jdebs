@@ -121,15 +121,34 @@ public class GameObject extends MapObject {
 		return AICore.getAction(this, map);
 	}
 	
+	public int getHp(){
+		Integer hp = (Integer) properties.get("hp");
+		if (hp == null) {
+			System.err.println("Gameobject \"" + getId() + "\" does not contains property \"hp\"");
+			return 0;
+		}
+		return hp;
+	}
+	
+	public void setHp(int hp){
+		properties.put("hp", hp);
+	}
+	
 	public Weapon getWeapon(){
+		
 		String weaponName = (String) this.getProperty("weapon");
-		if (weaponName == null) return null;
+		
+		//Если оружие у объекта не задано - то используем оружие "unarmored"
+		if (weaponName == null) return (Weapon) ResourceManager.getResource(ResourceManager.WEAPON + "." + "unarmored");
+		
 		Weapon weapon = (Weapon) ResourceManager.getResource(ResourceManager.WEAPON + "." + weaponName);
 		if (weapon == null) {
-			System.err.println("Gameobject \"" + getId() + "\" have weapon (" + weaponName + ") thet does not contains in  resources");
+			System.err.println("Gameobject \"" + getId() + "\" have weapon (" + weaponName + ") thet does not contains in resources");
 			return null;
 		}
+		
 		return weapon;
+		
 	}
 		
 }

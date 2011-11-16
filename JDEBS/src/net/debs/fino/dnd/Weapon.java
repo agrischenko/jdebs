@@ -27,6 +27,58 @@ public class Weapon {
 	}
 	
 	/**
+	 * ѕровер€ет попадает ли значение в диапозон критического удара
+	 * @param value значение дл€ проверки
+	 * @return true - попадает; false - не попадает
+	 */
+	public boolean inCriticalRange(int value){
+		String critivalRangeStr = (String) this.getProperty("criticalRange");
+		
+		// ≈сли критический диапозон не задан, то считаем что это 20
+		if (critivalRangeStr == null){
+			System.err.println("Weapon \"" + this.getName() + "\" does not contains property \"CriticalRange\", using default CriticalRange (20)");
+			return (value == 20);
+		}
+		if (critivalRangeStr.equals("")) return (value == 20);
+		
+		int index = critivalRangeStr.indexOf("-");
+		if (index == -1){
+			return (Integer.valueOf(critivalRangeStr) == value); 
+		}
+		else{
+			int min = Integer.valueOf(critivalRangeStr.substring(0, index));
+			int max = Integer.valueOf(critivalRangeStr.substring(index + 1, critivalRangeStr.length() - 1));
+			return (value >= min && value <= max);
+		}
+	}
+	
+	public int getCriticalKoef(){
+		String criticalKoefStr = (String) this.getProperty("CriticalKoef");
+		
+		// ≈сли критический коэффициент не задан, то считаем что это 2
+		if (criticalKoefStr == null){
+			System.err.println("Weapon \"" + this.getName() + "\" does not contains property \"CriticalKoef\", using default CriticalKoef (2)");
+			return 2;
+		}
+		if (criticalKoefStr.equals("")) return 2;
+		
+		return Integer.valueOf(criticalKoefStr);
+	}
+	
+	/**
+	 * ¬озвращает дальность атаки оружи€
+	 * @return дальность атаки
+	 */
+	public int getRange(){
+		String range = (String) this.getProperty("range");
+		if (range == null){
+			System.err.println("Weapon \"" + this.getName() + "\" does not contains property \"range\", using default range (1)");
+			return 1;
+		}
+		return Integer.valueOf(range);
+	}
+	
+	/**
 	 * ѕолучение название оружи€
 	 * @return название оружий
 	 */

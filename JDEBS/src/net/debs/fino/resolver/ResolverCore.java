@@ -65,6 +65,7 @@ public class ResolverCore {
 		L.pushJavaObject(map);
 		L.setGlobal("map");
 		
+		//System.out.println("doing action '" + action.getType() + "' for object '" + object.getId() + "'");
 		if (L.LdoFile(pathScript) != 0) System.err.println(String.valueOf(L.error()));
         
 		L.close();

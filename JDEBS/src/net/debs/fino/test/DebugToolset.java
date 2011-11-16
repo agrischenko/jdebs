@@ -58,7 +58,7 @@ public class DebugToolset extends JPanel {
 		@Override
 		public String doInBackground() {
 			DebsMap map = display.getDebsMap();
-			while(true) {
+//			while(true) {
 //				long tm = System.currentTimeMillis();
 				
 				if (allObjects == null) allObjects = new Vector<MapObject>(map.getAllMapObjects());
@@ -85,8 +85,8 @@ public class DebugToolset extends JPanel {
 					}
 				}
 //				System.out.println(String.format("Redraw in %d ms", System.currentTimeMillis() - tm));
-			}
-			//return "";
+//			}
+				return "";
 		}
 
 		@Override

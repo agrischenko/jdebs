@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
+import net.debs.fino.MapObject;
 import net.debs.fino.MapPoint;
 import net.debs.fino.Path;
 
@@ -156,6 +157,88 @@ public class MapPath {
 		
 		return null;
 	}
+	
+	/**
+	 * Определяет путь до объекта
+	 * @param map карта на которой будет происходить определение пути
+	 * @param p1 точка от которой будет происходить  определение пути
+	 * @param object объект к которому будет будет происходить определение пути
+	 * @return путь от точки <code>p1</code> к объекту <code>object</code> исключая клетку на которой находится объект
+	 */
+	public static Path path(DebsMap map, MapPoint p1, MapObject object){
+		
+		gMap = map;
+		gP1 = p1;
+		gP2 = object.getMapPoint();
+		
+		Vector<MapPoint> closeset = new Vector<MapPoint>();
+		BinaryHeap<eMapPoint> openset = new BinaryHeap<eMapPoint>();
+
+		Hashtable<MapPoint, Double> tg = new Hashtable<MapPoint, Double>();
+		Hashtable<MapPoint, Integer> th = new Hashtable<MapPoint, Integer>();
+		Hashtable<MapPoint, Double> tf = new Hashtable<MapPoint, Double>();
+		
+		Double xg, yg;
+		Integer xh, yh;
+		Double xf, yf;
+
+		xg = 0.;
+		xh = heuristic(gP1);
+		xf = xg + xh;
+		
+		tg.put(gP1, xg);
+		th.put(gP1, xh);
+		tf.put(gP1, xf);
+		
+		openset.add(new eMapPoint(gP1, null, xf));
+		
+		while (!openset.isEmpty()){
+			
+			//Получаем текущую точку из очереди на обработку
+			eMapPoint iPoint = openset.remove();
+			
+			xg = tg.get(iPoint);
+			
+			//Если текущая тока пути является соседней к конечной - то возвращаем сформированый путь
+			if (distance(iPoint, gP2) <= 1) return getPathFromEnd(iPoint);
+			
+			//Добавление точки к уже обработаным вершинам
+			closeset.add(iPoint);
+			
+			Vector<MapPoint> nearestMapPoints = getNearestMapPoints(iPoint);
+			
+			boolean isBeter = false;
+			
+			for (MapPoint point : nearestMapPoints) {
+				if (closeset.contains(point)) continue;
+				
+				yg = xg + distance(iPoint, point);
+				yh = heuristic(point);
+				yf = yg + yh;
+				
+				eMapPoint ePoint = new eMapPoint(point, iPoint, yf);
+				
+				if(!openset.contains(ePoint)){
+					openset.add(ePoint);
+					isBeter = true;
+				}
+				else{
+					if (yg < tg.get(point)){
+						openset.changeToBetter(ePoint, ePoint);
+						isBeter = true;
+					}
+				}
+				if (isBeter){
+					tg.put(point, yg);
+					th.put(point, yh);
+					tf.put(point, yf);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	
 	/*
 	 * Евристическая оценка текущей точки к конечной
