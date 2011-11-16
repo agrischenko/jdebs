@@ -57,7 +57,7 @@ public class DebugToolset extends JPanel {
 	class LUAProcessor extends SwingWorker<String, Object> {
 		@Override
 		public String doInBackground() {
-			DebsMap map = display.getDebsMap();
+			DebsMap map = display.getMap();
 //			while(true) {
 //				long tm = System.currentTimeMillis();
 				
