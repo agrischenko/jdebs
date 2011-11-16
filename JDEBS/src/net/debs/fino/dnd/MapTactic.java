@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import net.debs.fino.DebsMap;
 import net.debs.fino.MapPoint;
+import net.debs.fino.Path;
 
 /**
  * Класс определения ближайшей клетки с которой можно атаковать
@@ -18,7 +19,7 @@ public class MapTactic {
 		map.setWidth(30);
 		map.setHeight(30);
 		
-		MapPoint res = getNearestAttackMapPoint(map, new MapPoint(0, 0), new MapPoint(7, 5), 4, 3);
+		MapPoint res = getNearestAttackMapPoint(map, new MapPoint(6, 95), new MapPoint(5, 95), 6, 1);
 		
 		System.out.println(res);
 		
@@ -51,10 +52,13 @@ public class MapTactic {
 			
 			for (MapPoint point : points) {
 				if (MapDistance.distance(map, point, attackPoint) <= distance) {
-					int dist = MapPath.path(map, objectPoint, point).distance();
-					if (resDistance < dist) {
-					res = point;
-					resDistance = dist;
+					Path path = MapPath.path(map, objectPoint, point);
+					if (path != null){
+						int dist = path.distance();
+						if (resDistance < dist) {
+							res = point;
+							resDistance = dist;
+						}
 					}
 				}
 			}

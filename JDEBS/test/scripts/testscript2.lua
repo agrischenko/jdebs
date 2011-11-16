@@ -3,5 +3,5 @@ if (enemy == nil) then
 	return
 end 
 
-action:setType("move");
+action:setType("attack");
 action:setId(enemy:getId());

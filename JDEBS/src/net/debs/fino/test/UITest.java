@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
+import net.debs.fino.dnd.CharGenerator;
 import net.debs.fino.res.ResourceManager;
 import net.debs.fino.ui.MapDisplay;
 import net.debs.fino.ui.MiniMapDisplay;
@@ -37,30 +38,12 @@ public class UITest extends JFrame {
 		map.setWidth(30);
 		map.setHeight(30);
 
-		//map.addObject(5, 5, new GameObject("warrior","blue"));
-		//map.addObject(7, 5, new GameObject("archer","Green"));
-		//map.addObject(10, 8, new GameObject("chupa","red"));
-		//map.addObject(6, 6, new GameObject("elephant","gray"));
-		//map.addObject(29, 5, new GameObject("chupa","red"));
+		GameObject object1 = CharGenerator.generate("1", "blue", CharGenerator.TYPE_WARRIOR);
+		GameObject object2 = CharGenerator.generate("2", "green", CharGenerator.TYPE_WARRIOR);
 		
-		GameObject object1 = new GameObject("warrior","blue");
-		object1.setId("1");
-		object1.setProperty("speed", 2);
-		object1.setProperty("faction", "1");
-		object1.setProperty("rangeOfVisibility", 10);
-		object1.setProperty("seeable", true);
-		object1.setProperty("passable", false);
 		object1.setProperty("script", "test/scripts/testscript.lua");
-
-		GameObject object2 = new GameObject("archer","Green");
-		object2.setId("2");
-		object2.setProperty("faction", "2");
-		object2.setProperty("speed", 1);
-		object2.setProperty("rangeOfVisibility", 10);
-		object2.setProperty("seeable", true);
-		object2.setProperty("passable", false);
 		object2.setProperty("script", "test/scripts/testscript2.lua");
-
+		
 		map.addObject(5, 29, object1);
 		map.addObject(7, 5, object2);
 		
