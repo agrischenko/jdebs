@@ -19,15 +19,18 @@ public class Path {
 		return points.get(i);
 	}
 	
-	/*
+	/**
 	 * Получение квадрата на пути на указаном рсстоянии от начала 
-	 * 
+	 * @param distance расстояние от начала пути
+	 * @return квадрат на пути
 	 */
 	public MapPoint getMapPointByDistance(int distance){
 		if (this.distance() <= distance) return points.get(points.size() - 1);
 		
 		double dist = 0;
-		MapPoint point = get(0);
+		
+		MapPoint start = get(0);
+		MapPoint point = start;
 		
 		for (int i = 1; i < this.size(); i++) {
 			
@@ -35,7 +38,7 @@ public class Path {
 			if ((this.get(i - 1).getX() != this.get(i).getX()) && (this.get(i - 1).getY() != this.get(i).getY())) dist+=1.5;
 			else dist++;
 			
-			if (dist > distance) return point;
+			if ((int)dist > distance) return point;
 			
 			point = get(i);
 		}
@@ -63,6 +66,16 @@ public class Path {
 			this.distanceCache = (int) dist;
 		}
 		return this.distanceCache;
+	}
+
+	@Override
+	public String toString() {
+		String pathstr = "";
+		for (int i = 1; i < this.size(); i++) {
+			if (!pathstr.equals("")) pathstr += ", ";
+			pathstr += "(" + points.get(i) + ")";
+		}
+		return "(" + pathstr + ")";
 	}
 	
 }

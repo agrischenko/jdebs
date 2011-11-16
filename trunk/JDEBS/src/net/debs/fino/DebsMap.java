@@ -24,11 +24,14 @@ public class DebsMap {
 	 * Объекты, размещенные на карте
 	 */
 	Hashtable<MapPoint, MapObject> objects;
+	
+	Hashtable<String, MapObject> objectsById;
 
 	Iterator<Entry <MapPoint, MapObject>> curIt;
 
 	public DebsMap() {
 		objects =  new Hashtable<MapPoint, MapObject>();
+		objectsById = new Hashtable<String, MapObject>();
 	}
 	
 	public int getWidth() {
@@ -76,10 +79,19 @@ public class DebsMap {
 	public void addObject(int x, int y, MapObject sol) {
 		sol.setPivotPoint(new MapPoint(x, y));
 		objects.put(sol.getPivotPoint(), sol);
+		if (sol instanceof GameObject) {
+			GameObject go = (GameObject) sol;
+			objectsById.put(go.getId(), go);
+		}
 	}
 		
 	public MapObject getMapObject(MapPoint point){
 		return this.objects.get(point);
+	}
+	
+	public MapObject getMapObject(String id){
+		//TODO реализовать получение объекта по id
+		return null;
 	}
 	
 	public GameObject getGameObject(MapPoint point){
@@ -87,6 +99,20 @@ public class DebsMap {
 		if (objectInPoint instanceof GameObject) {
 			GameObject go = (GameObject) objectInPoint;
 			return go;
+		}
+		return null;
+	}
+	
+	/**
+	 * Возвращает объект на карте по его id
+	 * @param id идентификатор объекта
+	 * @return найденый объект (GameObject) или null елси объекта с таким id нет на карте
+	 */
+	public GameObject getGameObject(String id){
+		MapObject object = objectsById.get(id);
+		if (object == null) return null;
+		if (object instanceof GameObject) {
+			return (GameObject) object;
 		}
 		return null;
 	}
@@ -107,6 +133,19 @@ public class DebsMap {
 		objects.put(point, object);
 		object.setPivotPoint(point);
 		return prevMapPoint;
+	}
+	
+	/**
+	 * Удаляет объект с карты
+	 * @param object удаляемый объект
+	 */
+	public void removeObject(MapObject object){
+		MapPoint point = object.getMapPoint();
+		objects.remove(point);
+		if ( object instanceof GameObject) {
+			GameObject go = (GameObject) object;
+			objectsById.remove(go.getId());
+		}
 	}
 
 	public Collection<MapObject> getAllMapObjects() {
@@ -141,4 +180,5 @@ public class DebsMap {
 		return seeable;
 	}
 
+	
 }

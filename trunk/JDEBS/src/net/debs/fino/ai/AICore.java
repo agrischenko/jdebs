@@ -48,6 +48,7 @@ public class AICore {
 		L.pushJavaObject(gAiMe);
 		L.setGlobal("me");
 		
+		//System.out.println("getting action for object '" + object.getId() + "'");
 		if (L.LdoFile(object.getProperty("script").toString()) != 0) System.out.println(String.valueOf(L.error()));
 		
 		L.close(); 
