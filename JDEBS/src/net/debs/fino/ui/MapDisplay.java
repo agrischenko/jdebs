@@ -10,6 +10,8 @@ import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
+import java.util.Vector;
 
 import net.debs.fino.DebsMap;
 import net.debs.fino.GameObject;
@@ -20,23 +22,21 @@ public class MapDisplay extends Component {
 
 	private static final long serialVersionUID = -1187739180606177056L;
 
-	public static int MINCELLSIZE = 20;
-	public static int MAXCELLSIZE = 50;
-	
-	protected int cellSideLen = MAXCELLSIZE;
+	private static final int MINCELLSIZE = 20;
+	private static final int MAXCELLSIZE = 50;
 
-	MiniMapDisplay miniControl;
-	
-	BufferedImage sceneImage;
-	BufferedImage landscapeImage;
-	int imw;
-	int imh;
-	int cw;
-	int ch;
+	private int cellSize = MAXCELLSIZE;
+
+	protected Image sceneImage;
+	protected BufferedImage landscapeImage;
+	protected int imw;
+	protected int imh;
 
 	protected DebsMap map;
+	protected MiniMapDisplay miniControl;
 
-	Rectangle viewPort;
+	protected Rectangle viewPort = new Rectangle();
+	protected Rectangle viewPortCells = new Rectangle();
 	
 	public MapDisplay(DebsMap map) {
 		this.map = map;
@@ -45,76 +45,90 @@ public class MapDisplay extends Component {
 		addMouseListener(mad);
 		addMouseWheelListener(mad);
 		addMouseMotionListener(mad);
-		
-		viewPort = new Rectangle(0, 0, 1, 1);
-		recalcOfflineImageSize();
-		repairViewPort();
-		createLandscapeImage();
-		createSceneImage();
-		updateControls();
-		
-		addComponentListener(new ComponentAdapter() {
 
+		setIgnoreRepaint(true);
+		
+		// on change size - redraw images		
+		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				cw = getWidth();
-				ch = getHeight();
-				viewPort.width = Math.min(cw, imw);
-				viewPort.height = Math.min(ch, imh);
-				repaint();
-				if (miniControl!=null)
-					miniControl.viewPortChanged(viewPort);
+				patchViewPortAndRedraw();
+				fireViewPortChanged();
 			}
 		});
+	}
+
+	public void fireViewPortChanged() {
+		if (miniControl!=null)
+			miniControl.updateArea(viewPort);
+	}
+
+	public void reCreateViewScene() {
+		if (viewPort.isEmpty())
+			return;
+		updateOffscreenImageDimension();
+		createLandscapeImage();
+		createSceneImage();
+	}
+
+	private void updateOffscreenImageDimension() {
+		// calculate cells viewport
+		viewPortCells.x = (int) viewPort.x / cellSize;
+		viewPortCells.y = (int) viewPort.y / cellSize;
+
+		viewPortCells.width = (int) viewPort.width / cellSize + 2;
+		viewPortCells.height = (int) viewPort.height / cellSize + 2;
+		if ((viewPortCells.x + viewPortCells.width)>map.getWidth()) viewPortCells.width = map.getWidth() - viewPortCells.x;
+		if ((viewPortCells.y + viewPortCells.height)>map.getHeight()) viewPortCells.height = map.getHeight() - viewPortCells.y;
 		
+		// calculate image size
+		imw = viewPortCells.width * cellSize;
+		imh = viewPortCells.height * cellSize;
+	}
+
+	private void patchViewPortAndRedraw() {
+		Dimension fimsize = getFullMapDimension();
+
+		viewPort.width = getWidth();
+		viewPort.height = getHeight();
+
+		// calibrate size
+		if (viewPort.width > fimsize.width)
+			viewPort.width = fimsize.width;
+		
+		if (viewPort.height > fimsize.height)
+			viewPort.height = fimsize.height;
+
+		// calibrate position
+		if ((viewPort.x+viewPort.width)>fimsize.width) viewPort.x = fimsize.width - viewPort.width;
+		if ((viewPort.y+viewPort.height)>fimsize.height) viewPort.y = fimsize.height - viewPort.height;
+		if (viewPort.x<0) viewPort.x = 0;
+		if (viewPort.y<0) viewPort.y = 0;
+
+		reCreateViewScene();
+		repaint();
+	}
+
+	public void changeViewPortPosition(int mx, int my) {
+		viewPort.x += mx;
+		viewPort.y += my;
+		patchViewPortAndRedraw();
+		fireViewPortChanged();		
+	}
+
+	public void changeCellSize(int newCellSize) {
+		cellSize += newCellSize;
+		if (cellSize<MINCELLSIZE) cellSize = MINCELLSIZE;
+		else if (cellSize>MAXCELLSIZE) cellSize = MAXCELLSIZE;
+
+		patchViewPortAndRedraw();
+		fireViewPortChanged();		
 	}
 	
-	public void recalcOfflineImageSize() {
-		imw = map.getWidth() * cellSideLen;
-		imh = map.getHeight() * cellSideLen;
-		
-		// repair by bigger side
-		if (imw<cw && imh<ch) {
-			if (imh>=imw) {
-				cellSideLen = ch / map.getHeight();
-			} else {
-				cellSideLen = cw / map.getWidth();
-			}
-			imw = map.getWidth() * cellSideLen;
-			imh = map.getHeight() * cellSideLen;
-		}
-		
-		
-	}
-
-	public void repairViewPort() {
-		int maxX = imw-cw;
-		int maxY = imh-ch;
-		if (imw<cw || viewPort.x<0) viewPort.x = 0;
-		else if (viewPort.x>maxX) viewPort.x = maxX;
-		if (imh<ch || viewPort.y<0) viewPort.y = 0;
-		else if (viewPort.y>maxY) viewPort.y = maxY;
-
-		if (miniControl!=null)
-			miniControl.viewPortChanged(viewPort);
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		// рисуем буфер картинки
-		g.setColor(Color.black);
-		g.fillRect(0,0, getWidth(), getHeight());
-		int w = Math.min(cw, viewPort.width);
-		int h = Math.min(ch, viewPort.height);
-		int sx = (w<cw)?((cw-w)/2):0;
-		int sy = (h<ch)?((ch-h)/2):0;
-		g.drawImage(sceneImage, sx, sy, sx+w, sy+h,
-				viewPort.x, viewPort.y, viewPort.x+w, viewPort.y+h,
-				this);
-	}
-
 	private void createLandscapeImage() {
-		landscapeImage = new BufferedImage(imw, imh, BufferedImage.TYPE_INT_RGB);
+		if (landscapeImage==null 
+				|| landscapeImage.getWidth()!=imw || landscapeImage.getHeight()!=imh )
+			landscapeImage = new BufferedImage(imw, imh, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = landscapeImage.createGraphics();
 		drawLandscape(g);
 		g.dispose();
@@ -124,84 +138,46 @@ public class MapDisplay extends Component {
 	}
 
 	private void createSceneImage() {
-		sceneImage = new BufferedImage(imw, imh, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = sceneImage.createGraphics();
+		if (sceneImage==null 
+				|| sceneImage.getWidth(null)!=imw || sceneImage.getHeight(null)!=imh )
+			sceneImage = createImage(imw, imh);
+		Graphics g = sceneImage.getGraphics();
 		g.drawImage(landscapeImage, 0, 0, this);
 		drawScene(g);
+		drawGrid(g);
 		g.dispose();
 		
-		if (miniControl!=null)
-			miniControl.updateArea(sceneImage);
-
-		drawGrid(g);
 	}
 
-	private void drawScene(Graphics2D g) {
+	private void drawScene(Graphics g) {
 		drawObjects(g);
 	}
 
-	private void drawObjects(Graphics2D g) {
+	private void drawObjects(Graphics g) {
 		MapObject object;
-		for (object = map.getFirstObject(); object!=null; object = map.getNextObject()){
+		Iterator<MapObject> it = new Vector<MapObject>(map.getAllMapObjects()).iterator();
+		for (;it.hasNext();){
+			object = it.next();
 			MapPoint point = object.getMapPoint();
-			int x = point.getX() * cellSideLen;
-			int y = point.getY() * cellSideLen;
-			
-			if (object instanceof GameObject) {
-				GameObject gm = (GameObject) object;
-				Image im = (Image) (gm.getProperty("graphics.defaultImage"));
-				g.drawImage(im, x, y, cellSideLen, cellSideLen, this);
+			if (viewPortCells.contains(point.getAWTPoint())) {
+				int x = (point.getX() - viewPortCells.x) * cellSize;
+				int y = (point.getY() - viewPortCells.y) * cellSize;
+				if (object instanceof GameObject) {
+					GameObject gm = (GameObject) object;
+					Image im = (Image) (gm.getProperty("graphics.defaultImage"));
+					g.drawImage(im, x, y, cellSize, cellSize, this);
+				}
 			}
 		}
 	}
 
 	private void drawGrid(Graphics g) {
-		int i, pos;
 		g.setColor(Color.DARK_GRAY);
-		for(i=0, pos = cellSideLen; i<map.getWidth(); i++, pos+=cellSideLen)
+		int i, pos;
+		for(i=0, pos = cellSize; i<viewPortCells.getWidth(); i++, pos+=cellSize)
 			g.drawLine(pos, 0, pos, imh);
-		for(i=0, pos = cellSideLen; i<map.getHeight(); i++, pos+=cellSideLen)
+		for(i=0, pos = cellSize; i<viewPortCells.getHeight(); i++, pos+=cellSize)
 			g.drawLine(0, pos, imw, pos);
-	}
-	
-	public void addMiniControl(MiniMapDisplay control) {
-		miniControl = control;
-	}
-
-	public void viewPortChanged(int dx, int dy) {
-		viewPort.x += dx;
-		viewPort.y += dy;
-		repairViewPort();
-		repaint();
-	}
-
-	public void updateControls() {
-		if (miniControl!=null) {
-			miniControl.updateArea(sceneImage, viewPort);
-		}
-	}
-	
-	public DebsMap getDebsMap() {
-		return map;
-	}
-	
-	public synchronized void redraw() {
-		createLandscapeImage();
-		createSceneImage();
-		repaint();
-		updateControls();
-	}
-
-	public Rectangle getViewPort() {
-		return viewPort;
-	}
-
-	public int getCellSideLen() {
-		return cellSideLen;
-	}
-
-	public Dimension getOffscreenImageDimension() {
-		return new Dimension(imw, imh);
 	}
 
 	public void updateFinalImage() {
@@ -209,13 +185,43 @@ public class MapDisplay extends Component {
 		createSceneImage();
 	}
 
-	public int setCellSideLen(int i) {
-		cellSideLen = i;
-		if (cellSideLen<MapDisplay.MINCELLSIZE) {
-			cellSideLen = MapDisplay.MINCELLSIZE;
-		} else if (cellSideLen>MapDisplay.MAXCELLSIZE) {
-			cellSideLen = MapDisplay.MAXCELLSIZE;
-		}
-		return cellSideLen;
+	public void addMiniControl(MiniMapDisplay miniMapAreaDisplay) {
+		miniControl = miniMapAreaDisplay;
+	}
+
+	public synchronized void redraw() {
+		createSceneImage();
+		repaint();
+		if (miniControl!=null)
+			miniControl.redrawAll();
+	}
+
+	public DebsMap getMap() {
+		return map;
+	}
+
+	public Dimension getFullMapDimension() {
+		return new Dimension(map.getWidth()*cellSize, map.getHeight()*cellSize);
+	}
+
+	@Override
+	public boolean isDoubleBuffered() {
+		return true;
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		// рисуем буфер картинки
+		int w = Math.min(viewPort.width, imw);
+		int h = Math.min(viewPort.height, imh);
+		int x = imw<getWidth() ? (getWidth()-w)/2 : 0;
+		int y = imh<getHeight() ? (getHeight()-h)/2 : 0;
+		
+		int cx = viewPort.x - (viewPortCells.x*cellSize);
+		int cy = viewPort.y - (viewPortCells.y*cellSize);
+		
+		g.drawImage(sceneImage, x, y, x+w, y+h, 
+			cx, cy, cx+viewPort.width, cy+viewPort.height,
+			this);
 	}
 }

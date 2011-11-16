@@ -6,9 +6,19 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
+import java.util.Vector;
+
+import net.debs.fino.DebsMap;
+import net.debs.fino.GameObject;
+import net.debs.fino.MapObject;
+import net.debs.fino.MapPoint;
+import net.debs.fino.res.ResourceManager;
 
 public class MiniMapDisplay extends Component {
 
@@ -18,16 +28,17 @@ public class MiniMapDisplay extends Component {
 
 	final static Color CONTROL_COLOR = new Color(150, 150, 0);
 	
+	DebsMap map;
 	Rectangle viewPortCtl;
 	BufferedImage mapImage;
-	BufferedImage sceneImage;
 	Rectangle area;
 	double viewPortScale = 0.0;
-			
+	Dimension imsize;
+	
 	public MiniMapDisplay(MapDisplay display) {
 		
 		this.display = display;
-		
+		map = display.getMap();
 		Dimension sz = new Dimension(200, 150);
 		setPreferredSize(sz);
 		setSize(sz);
@@ -38,6 +49,20 @@ public class MiniMapDisplay extends Component {
 		addMouseMotionListener(mad);
 		addMouseListener(mad);
 		
+		// on change size - redraw images		
+		addComponentListener(new ComponentAdapter() {
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				mapImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+				stuck();
+			}
+
+		});
+	}
+
+	private void stuck() {
+		display.fireViewPortChanged();
 	}
 
 	@Override
@@ -56,20 +81,17 @@ public class MiniMapDisplay extends Component {
 	}
 
 	private void updateAreaImpl() {
-		if (sceneImage==null) return;
-
-		Graphics2D g = mapImage.createGraphics();
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, getWidth(), getHeight());
-
+		imsize = display.getFullMapDimension();
+		
 		double k = 0.0;
-		if (sceneImage.getWidth()>=sceneImage.getHeight()) {
-			k = (double) getWidth() / sceneImage.getWidth();
+		if (imsize.width>=imsize.height) {
+			k = (double) getWidth() / imsize.width;
 		} else {
-			k = (double) getHeight() / sceneImage.getHeight();
+			k = (double) getHeight() / imsize.height;
 		}
 
-		area = new Rectangle(0, 0, (int)(sceneImage.getWidth()*k), (int)(sceneImage.getHeight()*k));
+		area = new Rectangle(0, 0, (int)(imsize.width*k), (int)(imsize.height*k));
+		
 		double k2 = 1.0;
 		if (area.width>getWidth()) {
 			k2 = (double) getWidth() / area.width;
@@ -90,14 +112,24 @@ public class MiniMapDisplay extends Component {
 		viewPortCtl.width *= viewPortScale;
 		viewPortCtl.height *= viewPortScale;
 
-		
+		redrawAll();
+
+	}
+
+	public synchronized void redrawAll() {
+		// fill background
+		Graphics2D g = mapImage.createGraphics();
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, getWidth(), getHeight());
+
+		// draw objects
+		drawObjects(g);
+
+		// draw area bounding box
 		g.setColor(Color.DARK_GRAY);
-		g.drawImage(sceneImage, area.x, area.y, area.x + area.width, area.y + area.height,
-				0, 0, sceneImage.getWidth(), sceneImage.getHeight(), this);
 		g.drawRect(area.x, area.y, area.width-1, area.height-1);
 
 		// draw viewport rectangle
-
 		g.setColor(CONTROL_COLOR);
 		g.drawRect(viewPortCtl.x, viewPortCtl.y, viewPortCtl.width, viewPortCtl.height);
 
@@ -106,12 +138,30 @@ public class MiniMapDisplay extends Component {
 		repaint();
 	}
 
-	public void updateArea(BufferedImage image) {
-		this.sceneImage = image;
+	private void drawObjects(Graphics2D g) {
+		int cellw = area.width / map.getWidth();
+		int cellh = area.height / map.getHeight();
+		double cellSideLen = Math.max(cellw, cellh);
+		
+		MapObject object;
+		Iterator<MapObject> it = new Vector<MapObject>(map.getAllMapObjects()).iterator();
+		for (;it.hasNext();){
+			object = it.next();
+			MapPoint point = object.getMapPoint();
+			int x = area.x + (int) (point.getX() * cellSideLen);
+			int y = area.y + (int) (point.getY() * cellSideLen);
+			if (object instanceof GameObject) {
+				GameObject gm = (GameObject) object;
+				Color fc = ResourceManager.getFactionColor((String)gm.getProperty("faction.name"));
+				g.setColor(fc);
+				int wo = (int) (cellSideLen<2.0?2.0:cellSideLen);
+				g.fillOval(x, y, wo, wo);
+			}
+		}
 	}
-	public void updateArea(BufferedImage image, Rectangle viewPort) {
+
+	public void updateArea(Rectangle viewPort) {
 		viewPortCtl = new Rectangle(viewPort);
-		this.sceneImage = image;
 		updateAreaImpl();
 	}
 
@@ -120,7 +170,8 @@ public class MiniMapDisplay extends Component {
 		protected void repos(MouseEvent e) {
 			int newX = e.getX() - viewPortCtl.width / 2;
 			int newY = e.getY() - viewPortCtl.height / 2;
-			display.viewPortChanged((int)((newX - viewPortCtl.x)/viewPortScale), (int)((newY - viewPortCtl.y)/viewPortScale));
+
+			display.changeViewPortPosition((int)((newX - viewPortCtl.x)/viewPortScale), (int)((newY - viewPortCtl.y)/viewPortScale));
 
 			mdx = e.getXOnScreen();
 			mdy = e.getYOnScreen();
@@ -131,7 +182,7 @@ public class MiniMapDisplay extends Component {
 				if (viewPortCtl.contains(e.getPoint())) {
 					if (mdx>=0) {
 						int x = e.getXOnScreen(), y = e.getYOnScreen();
-						display.viewPortChanged((int)(-(mdx - x)/viewPortScale), (int)(-(mdy - y)/viewPortScale));
+						display.changeViewPortPosition((int)(-(mdx - x)/viewPortScale), (int)(-(mdy - y)/viewPortScale));
 					}
 				} else
 					repos(e);

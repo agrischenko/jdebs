@@ -57,12 +57,9 @@ public class UITest extends JFrame {
 		tools.add(minimap, BorderLayout.NORTH);
 
 		DebugToolset toolset = new DebugToolset(dspmap);
-		
 		tools.add(toolset, BorderLayout.CENTER);
 		
 		setVisible(true);
-		
-		dspmap.updateControls();
 	}
 
 }
