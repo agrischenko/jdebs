@@ -118,4 +118,11 @@ public class ResourceManager {
 		return bim;
 	}
 
+	public static Color getFactionColor(String factionName) {
+		return me.getFactionColorImpl(factionName);
+	}
+	protected Color getFactionColorImpl(String factionName) {
+		String resKey = FACTION+"."+factionName+".";
+		return (Color) getResourceImpl(resKey+FactionsLoader.COLOR);
+	}
 }

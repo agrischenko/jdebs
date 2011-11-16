@@ -57,7 +57,7 @@ public class DebsMap {
 		return curIt.next().getValue();
 	}
 
-	public MapObject getNextObject() {
+	public synchronized MapObject getNextObject() {
 		if (curIt==null || objects==null)
 			return null;
 		if (curIt.hasNext()) {
@@ -179,6 +179,5 @@ public class DebsMap {
 		if (seeable == null) return true; 
 		return seeable;
 	}
-
 	
 }
