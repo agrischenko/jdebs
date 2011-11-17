@@ -38,15 +38,52 @@ public class UITest extends JFrame {
 		map.setWidth(30);
 		map.setHeight(30);
 
+		int nBlueWarior = 300;
+		int nGreenWarior = 300;
+		
+		int dx = 0, dy = map.getHeight() - 1;
+		
+		for(int i = 0; i < nBlueWarior; i++)
+		{
+			GameObject object = CharGenerator.generate("1", "blue", CharGenerator.TYPE_WARRIOR);
+			object.setProperty("script", "test/scripts/testscript.lua");
+			map.addObject(dx, dy, object);
+			if(dx >= map.getWidth() - 1)
+			{
+				dx = 0;
+				dy--;
+			}
+			else
+				dx++;
+		}
+		
+		dx = 0;
+		dy = 0;
+		
+		for(int i = 0; i < nGreenWarior; i++)
+		{
+			GameObject object = CharGenerator.generate("2", "green", CharGenerator.TYPE_ARCHER);
+			object.setProperty("script", "test/scripts/testscript2.lua");
+			map.addObject(dx, dy, object);
+			if(dx >= map.getWidth() - 1)
+			{
+				dx = 0;
+				dy++;
+			}
+			else
+				dx++;
+
+		}
+/*
 		GameObject object1 = CharGenerator.generate("1", "blue", CharGenerator.TYPE_WARRIOR);
 		GameObject object2 = CharGenerator.generate("2", "green", CharGenerator.TYPE_ARCHER);
 		
 		object1.setProperty("script", "test/scripts/testscript.lua");
 		object2.setProperty("script", "test/scripts/testscript2.lua");
 		
-		map.addObject(5, 29, object1);
+		map.addObject(map.getWidth() - 1, map.getHeight() - 1, object1);
 		map.addObject(7, 5, object2);
-		
+*/			
 		getContentPane().setLayout(new BorderLayout(2,10));
 		MapDisplay dspmap = new MapDisplay(map);
 		getContentPane().add(dspmap, BorderLayout.CENTER);

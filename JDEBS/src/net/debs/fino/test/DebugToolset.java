@@ -59,25 +59,25 @@ public class DebugToolset extends JPanel {
 		@Override
 		public String doInBackground() {
 			DebsMap map = display.getMap();
-//			while(true) {
+			while(true) {
 //				long tm = System.currentTimeMillis();
 				
 				if (allObjects == null) allObjects = new Vector<MapObject>(map.getAllMapObjects());
 				if (curObject == null) curObject = 0;
 				
-				MapObject mapObject = allObjects.get(curObject);
+	//			MapObject mapObject = allObjects.get(curObject);
 				
 				
 //				System.out.println(String.format("collection created in %d ms", System.currentTimeMillis() - tm));
 
 //				tm = System.currentTimeMillis();
-				//for (MapObject mapObject : allObjects) {
+				for (MapObject mapObject : allObjects) {
 					if (mapObject instanceof GameObject) {
 						GameObject object = (GameObject) mapObject;
 						Action action = object.getAction(map);
 						ResolverCore.resolveAction(object, action, map);
 					}
-				//}
+				}
 				
 				curObject++;
 				if (curObject >= allObjects.size()) curObject = 0;
@@ -85,6 +85,7 @@ public class DebugToolset extends JPanel {
 //				System.out.println(String.format("lua processed in %d ms", System.currentTimeMillis() - tm));
 
 //				tm = System.currentTimeMillis();
+
 				synchronized (display) {
 					display.redraw();
 					try {
@@ -94,8 +95,8 @@ public class DebugToolset extends JPanel {
 					}
 				}
 //				System.out.println(String.format("Redraw in %d ms", System.currentTimeMillis() - tm));
-//			}
-				return "";
+			}
+//				return "";
 		}
 
 		@Override
