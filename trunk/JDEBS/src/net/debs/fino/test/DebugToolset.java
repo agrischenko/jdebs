@@ -76,6 +76,14 @@ public class DebugToolset extends JPanel {
 						GameObject object = (GameObject) mapObject;
 						Action action = object.getAction(map);
 						ResolverCore.resolveAction(object, action, map);
+						synchronized (display) {
+							display.redraw();
+							try {
+								Thread.sleep(1);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
 					}
 				}
 				
