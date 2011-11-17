@@ -1,3 +1,11 @@
+enemy = me:getNearestEnemy();
+
+if (enemy ~= nil) then
+	action:setType("attack");
+	action:setId(enemy:getId());
+	return
+end 
+
 dy = me:getProperty("dy");
 
 if dy == nil then
