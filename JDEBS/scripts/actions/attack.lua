@@ -71,7 +71,7 @@ if (ac > attack and attackRoll ~= 20) or attackRoll == 1 then
 	if attackRoll == 1 then
 		Print("miss (automiss attack roll is 1)");
 	else
-	Print("miss (ac: "..ac..")");
+		Print("miss (ac: "..ac..")");
 	end
 	return;
 end
