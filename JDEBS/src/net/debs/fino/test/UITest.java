@@ -38,8 +38,8 @@ public class UITest extends JFrame {
 		map.setWidth(30);
 		map.setHeight(30);
 
-		int nBlueWarior = 300;
-		int nGreenWarior = 300;
+		int nBlueWarior = 10;
+		int nGreenWarior = 10;
 		
 		int dx = 0, dy = map.getHeight() - 1;
 		
