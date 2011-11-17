@@ -90,6 +90,7 @@ if (weapon:inCriticalRange(attackRoll)) then
 		 max = weapon:getCriticalKoef();
 		 while i < max do
 		 	damage = damage + weapon:getDamage() + strengthModifier;
+		 	i = i + 1
 		 end
 		 Print("damage: "..damage.." (critical confirmed)");
 	else
